@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portfolio — Your Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=DM+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --ink: #161513;
+    --muted: #6c6a64;
+    --rule: rgba(22, 21, 19, 0.12);
+    --accent-a: #c2a6ff; /* lavender */
+    --accent-b: #ff8a6c; /* peach */
+    --accent-c: #f7c14a; /* amber */
+    --accent-d: #88d4a8; /* mint */
+    --serif: "Fraunces", "Times New Roman", serif;
+    --sans: "Geist", system-ui, -apple-system, sans-serif;
+    --mono: "DM Mono", ui-monospace, monospace;
+    --gutter: clamp(20px, 4vw, 56px);
+    --col-w: 1px solid var(--rule);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  /* ---------- Top nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto 1fr;
+    gap: clamp(24px, 6vw, 90px);
+    padding: 22px var(--gutter);
+    background: color-mix(in oklab, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 50;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav .brand { justify-self: start; }
+  .nav .end { justify-self: end; }
+  .nav a { position: relative; padding: 4px 2px; }
+  .nav a .sup {
+    font-size: 10px;
+    vertical-align: super;
+    margin-left: 2px;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .nav a:hover::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 1px; background: var(--ink);
+  }
+
+  /* ---------- Vertical column rules ---------- */
+  .rules {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr 1fr 1fr 1fr var(--gutter);
+  }
+  .rules > div { border-left: var(--col-w); }
+  .rules > div:first-child { border-left: 0; }
+
+  /* ---------- Side fixed UI ---------- */
+  .corner-mark {
+    position: fixed;
+    left: var(--gutter); bottom: 22px;
+    z-index: 40;
+    width: 28px; height: 28px;
+  }
+  .corner-mark svg { width: 100%; height: 100%; }
+
+  .honors-tab {
+    position: fixed;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    width: 38px;
+    padding: 18px 0 22px;
+    z-index: 40;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
+    font-family: var(--sans);
+  }
+  .honors-tab .w {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 500;
+  }
+  .honors-tab .label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    letter-spacing: 0.02em;
+    font-size: 13px;
+    padding: 6px 0;
+  }
+
+  .scroll-top {
+    position: fixed;
+    right: 18px; bottom: 22px;
+    z-index: 40;
+    width: 22px; height: 22px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* ---------- Footer (sticky bottom strip) ---------- */
+  .ribbon {
+    position: fixed; inset: auto 0 0 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    gap: clamp(20px, 5vw, 60px);
+    align-items: center;
+    padding: 14px calc(var(--gutter) + 56px) 14px var(--gutter);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: color-mix(in oklab, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--rule);
+  }
+  .ribbon .star { color: var(--ink); }
+  .ribbon a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ---------- Layout ---------- */
+  main {
+    position: relative;
+    z-index: 1;
+    padding: 110px var(--gutter) 120px;
+  }
+
+  section { padding: 90px 0; position: relative; }
+  section + section { border-top: 1px dashed var(--rule); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 6vw, 90px);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-top: 30px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(40px, 7vw, 110px); align-items: start; }
+
+  .portrait-wrap { position: relative; }
+  .portrait {
+    aspect-ratio: 3/4.2;
+    background:
+      radial-gradient(ellipse at 50% 30%, #d6d4cd 0%, #b8b6af 60%, #8e8c85 100%);
+    overflow: hidden;
+    position: relative;
+  }
+  .portrait .placeholder {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    color: rgba(255,255,255,0.7);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 16px;
+  }
+  .portrait .placeholder span {
+    border: 1px dashed rgba(255,255,255,0.5);
+    padding: 8px 12px;
+  }
+
+  .blob {
+    position: absolute;
+    width: 240px; height: 240px;
+    top: -40px; left: -50px;
+    background:
+      radial-gradient(circle at 30% 30%, var(--accent-a), var(--accent-b) 60%, var(--accent-c) 100%);
+    -webkit-mask: radial-gradient(closest-side, #000 65%, transparent 66%);
+            mask: radial-gradient(closest-side, #000 65%, transparent 66%);
+    /* flower-like petals */
+    clip-path: polygon(
+      50% 0%, 63% 18%, 88% 12%, 82% 38%, 100% 50%,
+      82% 62%, 88% 88%, 63% 82%, 50% 100%, 37% 82%,
+      12% 88%, 18% 62%, 0% 50%, 18% 38%, 12% 12%, 37% 18%
+    );
+    z-index: -1;
+    filter: blur(0.4px);
+  }
+  .blob.b2 {
+    top: auto; bottom: -40px; left: auto; right: -30px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle at 70% 70%, var(--accent-d), var(--accent-c) 70%);
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .eyebrow .ast {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .display {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    font-size: clamp(38px, 5.6vw, 78px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0 0 40px;
+    text-wrap: balance;
+  }
+  .display em {
+    font-style: italic;
+    font-weight: 350;
+  }
+
+  .lede p {
+    font-size: clamp(16px, 1.15vw, 19px);
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0 0 18px;
+    max-width: 56ch;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+
+  /* ---------- Section labels ---------- */
+  .section-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 350;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 1;
+    margin: 0 0 60px;
+  }
+
+  /* ---------- What I do ---------- */
+  .skills { display: grid; grid-template-columns: 1fr 1fr; gap: 70px 60px; }
+  .skills .cat-label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .swatch {
+    width: 14px; height: 14px;
+    transform: rotate(45deg);
+  }
+  .swatch.pink { background: #ff9aae; }
+  .swatch.green { background: var(--accent-d); }
+  .swatch.violet { background: #6a6cff; }
+  .swatch.peach { background: var(--accent-b); }
+  .swatch.amber { background: var(--accent-c); border-radius: 50%; transform: none; }
+  .swatch.heart {
+    background: #ff8aa3;
+    transform: none;
+    -webkit-mask: radial-gradient(circle at 30% 35%, #000 22%, transparent 23%) 0 0/100% 100%,
+                  radial-gradient(circle at 70% 35%, #000 22%, transparent 23%) 0 0/100% 100%,
+                  linear-gradient(#000 0 0);
+    mask-composite: add;
+  }
+
+  .skills li {
+    list-style: none;
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(20px, 1.6vw, 26px);
+    line-height: 1.5;
+  }
+  .skills ul { margin: 0; padding: 0; }
+
+  /* ---------- Projects ---------- */
+  .projects-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 50px; gap: 20px; flex-wrap: wrap; }
+  .projects-count {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .project-list { display: flex; flex-direction: column; gap: 0; }
+  .project {
+    display: grid;
+    grid-template-columns: 60px 1fr 1.2fr auto;
+    gap: 30px;
+    align-items: center;
+    padding: 28px 8px;
+    border-top: 1px solid var(--rule);
+    cursor: pointer;
+    transition: background 0.25s ease, padding 0.25s ease;
+  }
+  .project:last-child { border-bottom: 1px solid var(--rule); }
+  .project:hover { background: rgba(22,21,19,0.03); padding-left: 20px; }
+  .project .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .project .title {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2vw, 32px);
+    font-weight: 350;
+    line-height: 1.1;
+  }
+  .project .meta {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .project .arrow {
+    font-family: var(--serif);
+    font-size: 22px;
+    transition: transform 0.25s ease;
+  }
+  .project:hover .arrow { transform: translate(4px, -4px); }
+
+  /* ---------- Selected works grid ---------- */
+  .works {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 60px;
+  }
+  .work {
+    cursor: pointer;
+  }
+  .work .thumb {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #d8d4cb, #b8b3a8);
+    margin-bottom: 18px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s ease;
+  }
+  .work:hover .thumb { transform: scale(0.99); }
+  .work .thumb::after {
+    content: attr(data-label);
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+  }
+  .work .thumb.tone-1 { background: linear-gradient(135deg, #ffb89c, #ff8a6c); }
+  .work .thumb.tone-2 { background: linear-gradient(135deg, #c2a6ff, #6a6cff); }
+  .work .thumb.tone-3 { background: linear-gradient(135deg, #88d4a8, #2c8c63); }
+  .work .thumb.tone-4 { background: linear-gradient(135deg, #f7c14a, #c98e10); }
+
+  .work .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .work h3 {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(20px, 1.6vw, 26px);
+    margin: 0;
+  }
+  .work .tag {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .work p {
+    margin: 6px 0 0;
+    font-size: 14.5px;
+    color: var(--muted);
+    max-width: 42ch;
+  }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    background: #0c0b0a;
+    color: #f6f4ef;
+    margin: 60px calc(-1 * var(--gutter)) -120px;
+    padding: 140px var(--gutter) 180px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact .small {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 60px;
+    color: rgba(246,244,239,0.85);
+  }
+  .contact h2 {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(56px, 9vw, 132px);
+    line-height: 0.96;
+    text-align: center;
+    margin: 0 0 60px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .contact h2 em {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .contact .cta-pill {
+    display: inline-block;
+    border: 1px solid rgba(246,244,239,0.7);
+    border-radius: 999px;
+    padding: 22px 64px;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bg);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .contact .cta-pill:hover { background: var(--bg); color: var(--ink); }
+  .contact .cta-row { text-align: center; }
+
+  .contact .gradient-strip {
+    position: absolute; inset: auto 0 0 0;
+    height: 6px;
+    background: linear-gradient(90deg,
+      var(--accent-a), var(--accent-b), var(--accent-c), var(--accent-d), var(--accent-a));
+  }
+
+  /* ---------- Decorative star/asterisk ---------- */
+  .ast-icon {
+    display: inline-block;
+    width: 14px; height: 14px;
+    background:
+      conic-gradient(from 0deg,
+        var(--ink) 0 8%, transparent 8% 17%,
+        var(--ink) 17% 25%, transparent 25% 33%,
+        var(--ink) 33% 42%, transparent 42% 50%,
+        var(--ink) 50% 58%, transparent 58% 67%,
+        var(--ink) 67% 75%, transparent 75% 83%,
+        var(--ink) 83% 92%, transparent 92% 100%);
+    -webkit-mask: radial-gradient(circle, #000 12%, transparent 13% 100%) center/100% 100%,
+            linear-gradient(#000 0 0);
+    mask-composite: subtract;
+    border-radius: 50%;
+  }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .hero-grid, .grid, .skills, .works { grid-template-columns: 1fr; }
+    .nav { grid-template-columns: 1fr auto; gap: 16px; }
+    .nav .nav-link { display: none; }
+    .rules { grid-template-columns: var(--gutter) 1fr 1fr var(--gutter); }
+    .honors-tab { display: none; }
+    .project { grid-template-columns: 30px 1fr auto; }
+    .project .meta { display: none; }
+    .ribbon { padding-right: var(--gutter); grid-template-columns: auto 1fr auto; gap: 16px; }
+    .ribbon .hide-sm { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Tweak defaults -->
+<script>
+window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "name": "Mabel Kasunic",
+  "role": "designer",
+  "softSpot": "playful yet minimalistic and definitively functional",
+  "tagline": "A multidisciplinary __ROLE__ with a soft spot for __SOFTSPOT__ designs.",
+  "bgColor": "#f6f4ef",
+  "accentA": "#c2a6ff",
+  "accentB": "#ff8a6c",
+  "accentC": "#f7c14a",
+  "accentD": "#88d4a8",
+  "city": "YOUR CITY",
+  "email": "mabelkasunic@gmail.com",
+  "showBlobs": true
+}/*EDITMODE-END*/;
+</script>
+
+<!-- Column guide rules -->
+<div class="rules" aria-hidden="true">
+  <div></div><div></div><div></div><div></div><div></div><div></div>
+</div>
+
+<!-- Top nav -->
+<nav class="nav">
+  <a class="brand" href="#"><span data-tw="name">Mabel Kasunic</span></a>
+  <a class="nav-link" href="#projects">Projects<span class="sup" data-tw="projectCount">12</span></a>
+  <a class="nav-link" href="#about">About</a>
+  <a class="nav-link" href="#resume">Résumé ↗</a>
+  <a class="end" href="#contact">Contact</a>
+</nav>
+
+<!-- Bottom ribbon -->
+<div class="ribbon">
+  <span class="star">✻</span>
+  <a href="#" data-tw="city" id="ribbon-city">YOUR CITY</a>
+  <span class="hide-sm" id="clock">00:00:00 GMT</span>
+  <a href="#" class="hide-sm">LinkedIn</a>
+  <a href="#" class="hide-sm">Behance</a>
+</div>
+
+<!-- Corner flower mark -->
+<div class="corner-mark" aria-hidden="true">
+  <svg viewBox="0 0 100 100">
+    <g fill="#161513">
+      <circle cx="50" cy="22" r="14"/>
+      <circle cx="78" cy="42" r="14"/>
+      <circle cx="68" cy="74" r="14"/>
+      <circle cx="32" cy="74" r="14"/>
+      <circle cx="22" cy="42" r="14"/>
+      <circle cx="50" cy="50" r="6" fill="#f6f4ef"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Honors side tab -->
+<div class="honors-tab">
+  <span class="w">w.</span>
+  <span class="label">Honors</span>
+</div>
+
+<!-- Scroll to top -->
+<a class="scroll-top" href="#top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M12 20V4M12 4l-6 6M12 4l6 6"/>
+  </svg>
+</a>
+
+<main id="top">
+
+  <!-- HERO / ABOUT -->
+  <section class="hero" id="about">
+    <div class="hero-grid">
+      <div class="portrait-wrap">
+        <div class="blob" data-blob></div>
+        <div class="blob b2" data-blob></div>
+        <div class="portrait">
+          <img src="portrait.jpg" alt="Portrait" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(1) contrast(1.05);" />
+        </div>
+      </div>
+
+      <div class="lede">
+        <div class="eyebrow"><span class="ast">✻</span> About me</div>
+        <h1 class="display" data-tw="tagline">
+          A multidisciplinary <em>designer</em> with a soft spot for playful yet minimalistic and definitively functional designs.
+        </h1>
+        <p>I thrive on solving challenges and bringing innovative ideas to life. My approach to design is as fluid as the challenges themselves — one-size-fits-all is a myth, and great work happens by constantly evolving and adapting.</p>
+        <p>Currently open to new collaborations across brand, product, and editorial. <a href="#contact" style="text-decoration: underline; text-underline-offset: 4px;">Let's talk →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT I DO -->
+  <section id="skills">
+    <div class="grid">
+      <h2 class="section-label"><em>What I do</em></h2>
+
+      <div class="skills">
+        <div>
+          <div class="cat-label"><span class="swatch pink"></span> Graphic design</div>
+          <ul>
+            <li>Branding &amp; visual identity</li>
+            <li>Print &amp; editorial</li>
+            <li>Social media design</li>
+            <li>Digital marketing</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch green"></span> Visual design</div>
+          <ul>
+            <li>Web design</li>
+            <li>UI design</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch violet"></span> Web development</div>
+          <ul>
+            <li>Static website development</li>
+            <li>CMS &amp; Webflow</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch peach"></span> Misc.</div>
+          <ul>
+            <li>Social media management</li>
+            <li>Content writing</li>
+            <li>Photography</li>
+          </ul>
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+          <div class="cat-label"><span class="swatch amber"></span> Software &amp; tech</div>
+          <ul>
+            <li><span style="color: var(--muted);">Design —</span> Adobe Photoshop, Illustrator, InDesign, Figma, Canva</li>
+            <li><span style="color: var(--muted);">Web —</span> HTML, CSS, JavaScript, 11ty, Webflow</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT INDEX -->
+  <section id="projects">
+    <div class="projects-head">
+      <h2 class="section-label">Selected <em>projects</em></h2>
+      <span class="projects-count">— 06 of <span data-tw="projectCount">12</span></span>
+    </div>
+
+    <div class="project-list">
+      <a class="project" href="#">
+        <span class="num">01</span>
+        <span class="title">Project Title One</span>
+        <span class="meta">Branding · 2026</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="project" href="#">
+        <span class="num">02</span>
+        <span class="title">A second piece of work</span>
+        <span class="meta">Web · 2026</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="project" href="#">
+        <span class="num">03</span>
+        <span class="title">An editorial book design</span>
+        <span class="meta">Print · 2025</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="project" href="#">
+        <span class="num">04</span>
+        <span class="title">Mobile app UI exploration</span>
+        <span class="meta">Product · 2025</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="project" href="#">
+        <span class="num">05</span>
+        <span class="title">Identity for a small studio</span>
+        <span class="meta">Branding · 2024</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="project" href="#">
+        <span class="num">06</span>
+        <span class="title">Photography series</span>
+        <span class="meta">Photo · 2024</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SELECTED WORKS GRID -->
+  <section id="works">
+    <h2 class="section-label">Featured <em>case studies</em></h2>
+
+    <div class="works">
+      <a class="work">
+        <div class="thumb tone-1" data-label="REPLACE WITH IMAGE"></div>
+        <div class="row"><h3>Project name</h3><span class="tag">Brand · 2026</span></div>
+        <p>Short description of the project. Two lines max — keep it tight.</p>
+      </a>
+      <a class="work">
+        <div class="thumb tone-2" data-label="REPLACE WITH IMAGE"></div>
+        <div class="row"><h3>Another project</h3><span class="tag">Web · 2025</span></div>
+        <p>What it was, what you did, what came of it.</p>
+      </a>
+      <a class="work">
+        <div class="thumb tone-3" data-label="REPLACE WITH IMAGE"></div>
+        <div class="row"><h3>A third title</h3><span class="tag">Editorial · 2025</span></div>
+        <p>Description placeholder for your case study text.</p>
+      </a>
+      <a class="work">
+        <div class="thumb tone-4" data-label="REPLACE WITH IMAGE"></div>
+        <div class="row"><h3>Fourth piece</h3><span class="tag">Product · 2024</span></div>
+        <p>One short sentence about the work and your role.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="small">Have a project in mind?</div>
+    <h2>Let's create<br/>great things <em>together.</em></h2>
+    <div class="cta-row">
+      <a class="cta-pill" href="mailto:mabelkasunic@gmail.com" data-tw="email">mabelkasunic@gmail.com</a>
+    </div>
+    <div class="gradient-strip"></div>
+  </section>
+
+</main>
+
+<!-- Tweaks panel -->
+<div id="tweaks-root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script>
+  // Live clock in ribbon
+  function tick() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const offset = -d.getTimezoneOffset() / 60;
+    const sign = offset >= 0 ? '+' : '';
+    document.getElementById('clock').textContent =
+      `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} GMT${sign}${offset}`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Apply tweak values
+  function applyTweaks(t) {
+    const root = document.documentElement;
+    if (t.bgColor) root.style.setProperty('--bg', t.bgColor);
+    if (t.accentA) root.style.setProperty('--accent-a', t.accentA);
+    if (t.accentB) root.style.setProperty('--accent-b', t.accentB);
+    if (t.accentC) root.style.setProperty('--accent-c', t.accentC);
+    if (t.accentD) root.style.setProperty('--accent-d', t.accentD);
+
+    document.querySelectorAll('[data-tw="name"]').forEach(el => el.textContent = t.name);
+    document.querySelectorAll('[data-tw="city"]').forEach(el => el.textContent = t.city);
+    document.querySelectorAll('[data-tw="email"]').forEach(el => {
+      el.textContent = t.email;
+      el.href = 'mailto:' + t.email;
+    });
+    document.querySelectorAll('[data-tw="projectCount"]').forEach(el => el.textContent = t.projectCount || 12);
+
+    const tagline = (t.tagline || '')
+      .replace('__ROLE__', `<em>${t.role || 'designer'}</em>`)
+      .replace('__SOFTSPOT__', t.softSpot || '');
+    const taglineEl = document.querySelector('[data-tw="tagline"]');
+    if (taglineEl) taglineEl.innerHTML = tagline;
+
+    document.querySelectorAll('[data-blob]').forEach(b => {
+      b.style.display = t.showBlobs ? '' : 'none';
+    });
+  }
+</script>
+
+<script type="text/babel">
+  const { useEffect } = React;
+  const { TweaksPanel, useTweaks, TweakSection, TweakText, TweakColor, TweakToggle, TweakNumber } = window;
+
+  function App() {
+    const defaults = { ...window.__TWEAK_DEFAULTS, projectCount: 12 };
+    const [t, setTweak] = useTweaks(defaults);
+
+    useEffect(() => { applyTweaks(t); }, [t]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Identity">
+          <TweakText label="Name" value={t.name} onChange={v => setTweak('name', v)} />
+          <TweakText label="Role" value={t.role} onChange={v => setTweak('role', v)} />
+          <TweakText label="City" value={t.city} onChange={v => setTweak('city', v)} />
+          <TweakText label="Email" value={t.email} onChange={v => setTweak('email', v)} />
+        </TweakSection>
+
+        <TweakSection title="Tagline">
+          <TweakText label="Soft spot for…" value={t.softSpot} onChange={v => setTweak('softSpot', v)} multiline />
+        </TweakSection>
+
+        <TweakSection title="Palette">
+          <TweakColor label="Background" value={t.bgColor} onChange={v => setTweak('bgColor', v)}
+            options={['#f6f4ef', '#ffffff', '#efece4', '#0c0b0a', '#fff8ee']} />
+          <TweakColor label="Accent A" value={t.accentA} onChange={v => setTweak('accentA', v)}
+            options={['#c2a6ff', '#ff9aae', '#88d4a8', '#6a6cff']} />
+          <TweakColor label="Accent B" value={t.accentB} onChange={v => setTweak('accentB', v)}
+            options={['#ff8a6c', '#f7c14a', '#88d4a8', '#c2a6ff']} />
+          <TweakColor label="Accent C" value={t.accentC} onChange={v => setTweak('accentC', v)}
+            options={['#f7c14a', '#88d4a8', '#ff8a6c', '#c2a6ff']} />
+          <TweakColor label="Accent D" value={t.accentD} onChange={v => setTweak('accentD', v)}
+            options={['#88d4a8', '#c2a6ff', '#ff8a6c', '#f7c14a']} />
+        </TweakSection>
+
+        <TweakSection title="Layout">
+          <TweakToggle label="Show flower blobs" value={t.showBlobs} onChange={v => setTweak('showBlobs', v)} />
+          <TweakNumber label="Project count" value={t.projectCount || 12} min={1} max={99} onChange={v => setTweak('projectCount', v)} />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+</script>
+
+</body>
+</html>
