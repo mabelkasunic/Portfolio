@@ -9,6 +9,433 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=DM+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <style>
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Thin.ttf") format("truetype");
+    font-weight: 100;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-display: swap;
+  }
+
+  /* ---------- Preloader (000 → 100 counter, then wipes up) ---------- */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0c0b0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+  }
+  .preloader.done {
+    transform: translateY(-100%);
+    transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .preloader-count {
+    font-family: "Chreed", var(--sans);
+    font-weight: 800;
+    font-size: clamp(64px, 13vw, 200px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: #f6f4ef;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+  }
+  body:not(.loaded) { overflow: hidden; }
+
+  /* ---------- Pinned hero stage ----------
+     Wraps the cursor-hero (MABEL KASUNIC) and the animated-hero pin track so
+     both stick within a shared scope. The cursor-hero sticks at top:0 and the
+     animated-hero sticks just below it, so the entire frame stays visible
+     while the product image animation plays — no scroll dead-zone before the
+     animation begins. Both unstick when the stage scrolls past. */
+  .pinned-stage {
+    position: relative;
+  }
+
+  /* ---------- Cursor-Interactive Hero ---------- */
+  .cursor-hero {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--ink);
+    overflow: hidden;
+    padding: 0;
+  }
+
+  /* Intro shrink runs once the preloader has cleared (body.loaded) */
+  body.loaded .cursor-hero {
+    animation: heroShrink 0.9s cubic-bezier(0.65, 0, 0.35, 1) 1.6s forwards;
+  }
+
+  @keyframes heroShrink {
+    0%   { min-height: 100vh; }
+    100% { min-height: 40vh; }
+  }
+
+  .cursor-hero-text {
+    font-family: "Chreed", var(--sans);
+    font-size: clamp(72px, 17vw, 420px);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    margin: 0;
+    text-align: center;
+    user-select: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 clamp(6px, 0.6vw, 14px);
+    transform: translateY(0);
+  }
+
+  body.loaded .cursor-hero-text {
+    animation:
+      slideToTop 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards,
+      slideCompensate 0.9s cubic-bezier(0.65, 0, 0.35, 1) 1.6s forwards;
+  }
+
+  @keyframes slideToTop {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(calc(95px - 50vh + 50%)); }
+  }
+
+  /* As .cursor-hero shrinks from 100vh → 40vh, the flex-centered text would jump up
+     by 30vh. This compensates so MABEL KASUNIC stays visually pinned at top: 95px. */
+  @keyframes slideCompensate {
+    0%   { transform: translateY(calc(95px - 50vh + 50%)); }
+    100% { transform: translateY(calc(95px - 20vh + 50%)); }
+  }
+
+  .ch-word {
+    display: flex;
+    white-space: nowrap;
+  }
+
+  /* Per-letter span. Cursor proximity squishes it horizontally (scaleX);
+     symmetric negative margins pull neighbours in so the word pinches
+     inward at the cursor — JS drives both transform and margin. */
+  .ch {
+    display: inline-block;
+    transform-origin: center center;
+    transform: scaleX(1);
+    will-change: transform, margin;
+    font-weight: 700;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(246, 244, 239, 0.65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .scroll-hint .arrow {
+    display: inline-block;
+    font-size: 18px;
+    animation: scrollBounce 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50%      { transform: translateY(8px); opacity: 1; }
+  }
+
+  /* Chrome adapts while the dark opening hero fills the viewport */
+  .corner-mark svg g,
+  .scroll-top {
+    transition: fill 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+  }
+  .honors-tab {
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  body.on-dark .corner-mark svg g { fill: #f6f4ef; }
+  body.on-dark .corner-mark svg circle:last-child { fill: #0c0b0a; }
+  body.on-dark .scroll-top { color: #f6f4ef; }
+  body.on-dark .honors-tab {
+    background: #f6f4ef;
+    color: #0c0b0a;
+  }
+
+  /* ---------- Animated Hero ---------- */
+  /* Pin track: tall scrollable wrapper inside .pinned-stage. While progress
+     is in (0, 1), the sticky .animated-hero stays pinned just below the
+     sticky cursor-hero so the entire opening frame stays visually fixed —
+     only the product image animates. */
+  .animated-hero-pin {
+    position: relative;
+    height: 260vh;
+  }
+
+  .animated-hero {
+    position: sticky;
+    /* Pins directly under the sticky cursor-hero (40vh after shrink) so the
+       row sits at the same viewport position users see at rest. */
+    top: 40vh;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Top-aligned (not centred) so the row sits close under the pinned
+       MABEL KASUNIC heading; the space below is reserved for the
+       scroll-linked image growth in phase 2. */
+    justify-content: flex-start;
+    overflow: visible;
+    background: var(--bg);
+    padding: clamp(20px, 5vh, 90px) var(--gutter) 30px;
+    gap: 2vh;
+  }
+
+  .hero-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(20px, 3vw, 60px);
+  }
+
+  .hero-side {
+    font-family: "Chreed", var(--sans);
+    font-size: clamp(44px, 8vw, 170px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  .hero-center-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: clamp(240px, 30vw, 520px);
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .hero-labels {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--sans);
+    font-size: clamp(10px, 0.85vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .placeholder-img {
+    position: absolute;
+    inset: 0;
+    background: #1a1a1a;
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .placeholder-img span {
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    padding: 8px 14px;
+  }
+
+  .hero-scroll {
+    font-family: var(--sans);
+    font-size: clamp(10px, 0.85vw, 12px);
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* Wipe-reveal entrance — opacity + clip-path only, so transform is free for phase-2 */
+  .hero-labels,
+  .hero-image,
+  .hero-side,
+  .hero-scroll {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .animated-hero.in-view .hero-labels    { animation: wipeReveal 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0s     forwards; }
+  .animated-hero.in-view .hero-image     { animation: wipeReveal 1.1s  cubic-bezier(0.22, 1, 0.36, 1) 0.15s  forwards; }
+  .animated-hero.in-view .hero-side-left { animation: wipeReveal 1s    cubic-bezier(0.22, 1, 0.36, 1) 0.35s  forwards; }
+  .animated-hero.in-view .hero-side-right{ animation: wipeReveal 1s    cubic-bezier(0.22, 1, 0.36, 1) 0.42s  forwards; }
+  .animated-hero.in-view .hero-scroll    { animation: wipeReveal 0.9s  cubic-bezier(0.22, 1, 0.36, 1) 0.6s   forwards; }
+
+  @keyframes wipeReveal {
+    0%   { opacity: 0; clip-path: inset(0 0 100% 0); }
+    99%  { opacity: 1; clip-path: inset(0 0 0 0); }
+    100% { opacity: 1; clip-path: none; }
+  }
+
+  /* Phase 2 — scroll-linked, three-stage:
+       Stage 1 (--imgdown-progress) : image slides down + re-centres.
+       Stage 2 (--imggrow-progress) : image enlarges to the full content width.
+       Stage 3 (--text-progress)    : side words slide together until they meet.
+     All distances/scales are measured by JS so the words land edge-to-edge as one
+     phrase (never overlap) and the image grows to an exact full-width fit. */
+  .animated-hero {
+    --phase-progress: 0;
+    --imgdown-progress: 0;
+    --imggrow-progress: 0;
+    --text-progress: 0;
+    --converge-left: 0px;
+    --converge-right: 0px;
+    --img-tx: 0px;
+    --img-ty: 0px;
+    --img-scale: 1;
+  }
+
+  .hero-side,
+  .hero-image {
+    will-change: transform;
+  }
+
+  .hero-side-left  { transform: translateX(calc(var(--converge-left)  * var(--text-progress))); }
+  .hero-side-right { transform: translateX(calc(var(--converge-right) * var(--text-progress))); }
+  /* Image: drop + re-centre first, then grow from its top edge so it expands
+     downward (below the words) to the full content width. */
+  .hero-image {
+    transform-origin: center top;
+    transform:
+      translate(
+        calc(var(--img-tx) * var(--imgdown-progress)),
+        calc(var(--img-ty) * var(--imgdown-progress))
+      )
+      scale(calc(1 + (var(--img-scale) - 1) * var(--imggrow-progress)));
+    z-index: 5;
+  }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .animated-hero {
+      top: 35vh;
+      min-height: 65vh;
+      padding: 20px var(--gutter);
+      gap: 3vh;
+    }
+
+    .hero-row {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero-side {
+      font-size: clamp(40px, 13vw, 100px);
+      text-align: center;
+    }
+
+    .hero-center-group {
+      width: 100%;
+      max-width: 420px;
+      order: 0;
+    }
+
+    .hero-side-left  { order: -1; }
+    .hero-side-right { order: 1; }
+
+    .cursor-hero-text {
+      font-size: clamp(52px, 17vw, 150px);
+      gap: 0;
+      letter-spacing: 0.04em;
+      padding: 0 6px;
+    }
+    @keyframes slideToTop {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(calc(45px - 50vh + 50%)); }
+    }
+    @keyframes slideCompensate {
+      0%   { transform: translateY(calc(45px - 50vh + 50%)); }
+      100% { transform: translateY(calc(45px - 17.5vh + 50%)); }
+    }
+    @keyframes heroShrink {
+      0%   { min-height: 100vh; }
+      100% { min-height: 35vh; }
+    }
+  }
+</style>
+
+<style>
   :root {
     --bg: #f6f4ef;
     --ink: #161513;
@@ -40,22 +467,42 @@
   a { color: inherit; text-decoration: none; }
   img { max-width: 100%; display: block; }
 
+  /* ---------- Custom dot cursor ---------- */
+  @media (hover: hover) and (pointer: fine) {
+    * { cursor: none !important; }
+    .custom-cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      border-radius: 50%;
+      background: #FF69c8;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-100px, -100px, 0);
+      transition: transform 0.08s ease-out, opacity 0.2s ease;
+    }
+  }
+
   /* ---------- Top nav ---------- */
   .nav {
     position: fixed; inset: 0 0 auto 0;
     display: grid;
     grid-template-columns: 1fr auto auto auto 1fr;
     gap: clamp(24px, 6vw, 90px);
-    padding: 22px var(--gutter);
-    background: color-mix(in oklab, var(--bg) 86%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 16px var(--gutter);
+    background: transparent;
     z-index: 50;
     font-family: var(--sans);
-    font-size: 13.5px;
-    letter-spacing: 0.06em;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: #ffffff;
+    mix-blend-mode: difference;
+    pointer-events: none;
   }
+  .nav a { pointer-events: auto; }
   .nav .brand { justify-self: start; }
   .nav .end { justify-self: end; }
   .nav a { position: relative; padding: 4px 2px; }
@@ -167,16 +614,39 @@
   }
 
   /* ---------- Hero ---------- */
-  .hero { padding-top: 30px; }
-  .hero-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(40px, 7vw, 110px); align-items: start; }
-
-  .portrait-wrap { position: relative; }
-  .portrait {
-    aspect-ratio: 3/4.2;
-    background:
-      radial-gradient(ellipse at 50% 30%, #d6d4cd 0%, #b8b6af 60%, #8e8c85 100%);
-    overflow: hidden;
+  /* The animated-hero script sets an inline padding-top on this section,
+     measured so the About content clears the fully-grown hero image. This
+     clamp is the mobile/no-JS fallback (the image never grows on the
+     stacked mobile layout). */
+  .hero { padding-top: clamp(140px, 22vh, 320px); }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.2fr;
+    gap: clamp(40px, 7vw, 110px);
+    align-items: start;
     position: relative;
+    isolation: isolate;
+  }
+
+  /* ---------- Bio portrait + swirl blobs (rebuilt from "bio 1.svg") ---------- */
+  /* isolate keeps the swirl blobs in their own stacking context so they
+     bleed around the headshot without sliding under page chrome. */
+  .portrait-wrap {
+    position: relative;
+    max-width: 420px;
+    isolation: isolate;
+  }
+  .portrait {
+    position: relative;
+    z-index: 2;
+    aspect-ratio: 438 / 482;        /* matches the headshot frame in bio 1.svg */
+    overflow: hidden;
+    background: #d6d4cd;
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  .hero.in-view .portrait {
+    animation: wipeReveal 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
   }
   .portrait .placeholder {
     position: absolute; inset: 0;
@@ -194,27 +664,189 @@
     padding: 8px 12px;
   }
 
-  .blob {
-    position: absolute;
-    width: 240px; height: 240px;
-    top: -40px; left: -50px;
-    background:
-      radial-gradient(circle at 30% 30%, var(--accent-a), var(--accent-b) 60%, var(--accent-c) 100%);
-    -webkit-mask: radial-gradient(closest-side, #000 65%, transparent 66%);
-            mask: radial-gradient(closest-side, #000 65%, transparent 66%);
-    /* flower-like petals */
-    clip-path: polygon(
-      50% 0%, 63% 18%, 88% 12%, 82% 38%, 100% 50%,
-      82% 62%, 88% 88%, 63% 82%, 50% 100%, 37% 82%,
-      12% 88%, 18% 62%, 0% 50%, 18% 38%, 12% 12%, 37% 18%
-    );
-    z-index: -1;
-    filter: blur(0.4px);
+  /* ---------- Bio → Design-practice swirl morph ----------
+     The three orbs (cyan/pink/yellow, lifted from bio 1.svg + design
+     practice.svg) live on a single sticky overlay so JS can interpolate
+     them through the viewport as you scroll. Inner highlight groups still
+     spin via CSS for the "boiling gradient" look; the outer transform is
+     scroll-driven (set inline by the morph script). */
+  .swirl-stage {
+    position: relative;
+    isolation: isolate;
   }
-  .blob.b2 {
-    top: auto; bottom: -40px; left: auto; right: -30px;
-    width: 180px; height: 180px;
-    background: radial-gradient(circle at 70% 70%, var(--accent-d), var(--accent-c) 70%);
+  /* Sticky layer pinned at top:0 for the entire scroll through the stage.
+     height:0 keeps it from consuming any flow space. Orbs inside are
+     absolutely positioned and extend outward via transforms set by JS in
+     viewport coords. z-index:1 sits ABOVE the .dp-circle (z:-1) so the orbs
+     render in front of the stroked circle, but BELOW the text/labels (z:2)
+     so the heading and labels stay readable on top. */
+  .swirl-layer {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;   /* let the blurred halos bleed past the viewport */
+  }
+
+  .orb {
+    position: absolute;
+    top: 0; left: 0;
+    width: 600px;
+    height: 600px;
+    /* Translate component of the inline transform addresses the orb's centre,
+       so pre-offset by -half so (x,y) is the centre point. */
+    margin: -300px 0 0 -300px;
+    filter: blur(8px);  /* tight discs with just a soft edge, matching design practice.svg */
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: opacity 0.5s ease;
+  }
+  .orb svg { width: 100%; height: 100%; display: block; }
+
+  /* Inner highlight groups orbit the clip centre (300,300 in the viewBox).
+     This is the "boiling" gradient motion from bio 1.svg, kept time-based
+     so the orbs feel alive even when the user isn't scrolling. */
+  .orb-rot  {
+    transform-box: view-box;
+    transform-origin: 300px 300px;
+    animation: orbSpin 19s linear infinite;
+  }
+  .orb-rot2 {
+    transform-box: view-box;
+    transform-origin: 300px 300px;
+    animation: orbSpin 28s linear infinite reverse;
+  }
+  @keyframes orbSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Wipe-reveal for the bio copy — same clip-path wipe used elsewhere. */
+  .hero .reveal {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  .hero.in-view .reveal {
+    animation: wipeReveal 1.05s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) forwards;
+  }
+
+  /* ---------- #design-practice section ----------
+     Houses the stroked central circle (the destination of the orb morph).
+     Tall padding gives the morph room to play out as you scroll. */
+  #design-practice {
+    padding: 18vh var(--gutter) 22vh;
+    position: relative;
+  }
+  .dp-grid {
+    position: relative;
+    /* NO z-index here — this would form a stacking context that traps
+       .dp-circle's z:-1, defeating the orbs-in-front-of-circle ordering.
+       Specific children that need to render above the swirl layer get
+       their own z-index below. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 18px;
+  }
+  .dp-heading {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 30px;
+    max-width: 16ch;
+  }
+  .dp-heading em { font-style: italic; }
+
+  /* Frame wraps the circle + overlay text so the labels can be absolutely
+     positioned in fractional coords that match the orbs' settle anchors.
+     position:relative with no z-index intentionally does NOT create a
+     stacking context, so .dp-circle's z:-1 and labels' z:2 below escape
+     to the .swirl-stage context where they can interleave with the orbs. */
+  .dp-frame {
+    position: relative;
+    width: min(60vmin, 600px);
+    aspect-ratio: 1;
+    margin-top: 8px;
+  }
+  /* z:-1 puts the stroked circle BEHIND the orbs in the .swirl-stage
+     stacking context (orbs are on .swirl-layer at z:1). */
+  .dp-circle {
+    position: relative;
+    z-index: -1;
+    width: 100%; height: 100%;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+  }
+
+  /* Centre text inside the circle — small caps sans-serif stacked on two
+     lines, matching design practice.svg. z:2 keeps it ABOVE the orbs (z:1). */
+  .dp-center {
+    position: absolute;
+    z-index: 2;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(11px, 0.9vw, 14px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    text-align: center;
+    color: var(--ink);
+  }
+
+  /* Orb labels — placed at the SAME fractional offsets the orbs settle at
+     (see dpYellow/dpCyan/dpPink in the morph script). Each label is centred
+     on its orb. z:2 keeps them ABOVE the orbs (z:1) so they read on the disc. */
+  .dp-label {
+    position: absolute;
+    z-index: 2;
+    font-family: var(--sans);
+    font-size: clamp(13px, 1.3vw, 18px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.25;
+    max-width: 10em;
+  }
+  /* yellow: orb at (-0.32r, -0.62r) → in % of frame (which is 2r wide):
+     x = 50% + (-0.32 / 2) * 100% = 34%, y = 50% + (-0.62 / 2) * 100% = 19% */
+  .dp-label-yellow { top: 19%;   left: calc(34% + 50px);   transform: translate(-50%, -50%); }
+  /* cyan: orb at (+0.72r, +0.18r) → x = 86%, y = 59% */
+  .dp-label-cyan   { top: 59%;   left: calc(86% + 50px);   transform: translate(-50%, -50%); }
+  /* pink: orb at (-0.55r, +0.55r) → x = 22.5%, y = 77.5% */
+  .dp-label-pink   { top: 77.5%; left: calc(22.5% + 50px); transform: translate(-50%, -50%); }
+
+  /* Opacity is driven per-frame by the morph script so all dp text resolves
+     into place together as the orbs settle. No transform here — labels and
+     centre text already use their own transforms for positioning. */
+  .reveal-dp { opacity: 0; will-change: opacity; }
+
+  /* Bio content sits above the sticky orb layer (z:1). */
+  #about .hero-grid { position: relative; z-index: 2; }
+  /* dp-grid is intentionally position:relative with NO z-index — so it does
+     not form a stacking context. That lets .dp-circle (z:-1) and the orbs
+     (z:1 via .swirl-layer) interleave correctly in .swirl-stage's context. */
+  #design-practice .dp-grid { position: relative; }
+  /* Heading + eyebrow need explicit z to render above the orbs (z:1). */
+  .dp-heading.reveal-dp,
+  #design-practice .eyebrow.reveal-dp { position: relative; z-index: 2; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb-rot, .orb-rot2 { animation: none !important; }
+    .orb { opacity: 0.85 !important; transition: none !important; }
+    .hero .reveal, .portrait {
+      animation: none !important;
+      opacity: 1 !important;
+      clip-path: none !important;
+    }
   }
 
   .eyebrow {
@@ -247,7 +879,19 @@
     font-style: italic;
     font-weight: 350;
   }
+  /* Gradient-filled emphasis word — the orange→pink sweep from bio 1.svg. */
+  .display em.grad {
+    background-image: linear-gradient(100deg, #FF8B17 6%, #FE42BF 94%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 
+  .lede {
+    position: relative;
+    z-index: 1;        /* keeps the copy above the pink swirl disc */
+  }
   .lede p {
     font-size: clamp(16px, 1.15vw, 19px);
     line-height: 1.6;
@@ -494,13 +1138,32 @@
 </head>
 <body>
 
+<!-- Custom dot cursor -->
+<div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
+<script>
+  (function () {
+    var dot = document.getElementById('customCursor');
+    if (!dot || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    window.addEventListener('mousemove', function (e) {
+      dot.style.transform = 'translate3d(' + e.clientX + 'px, ' + e.clientY + 'px, 0)';
+    });
+    document.addEventListener('mouseleave', function () { dot.style.opacity = '0'; });
+    document.addEventListener('mouseenter', function () { dot.style.opacity = '1'; });
+  })();
+</script>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+  <span class="preloader-count" id="preloaderCount">000</span>
+</div>
+
 <!-- Tweak defaults -->
 <script>
 window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "name": "Mabel Kasunic",
-  "role": "designer",
-  "softSpot": "playful yet minimalistic and definitively functional",
-  "tagline": "A multidisciplinary __ROLE__ with a soft spot for __SOFTSPOT__ designs.",
+  "role": "experiences",
+  "softSpot": "participation, curiosity, and connection",
+  "tagline": "I design digital and physical __ROLE__ built around __SOFTSPOT__.",
   "bgColor": "#f6f4ef",
   "accentA": "#c2a6ff",
   "accentB": "#ff8a6c",
@@ -511,11 +1174,6 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "showBlobs": true
 }/*EDITMODE-END*/;
 </script>
-
-<!-- Column guide rules -->
-<div class="rules" aria-hidden="true">
-  <div></div><div></div><div></div><div></div><div></div><div></div>
-</div>
 
 <!-- Top nav -->
 <nav class="nav">
@@ -549,12 +1207,6 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   </svg>
 </div>
 
-<!-- Honors side tab -->
-<div class="honors-tab">
-  <span class="w">w.</span>
-  <span class="label">Honors</span>
-</div>
-
 <!-- Scroll to top -->
 <a class="scroll-top" href="#top" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -562,29 +1214,125 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   </svg>
 </a>
 
-<main id="top">
+<!-- PINNED HERO STAGE: cursor-hero (MABEL KASUNIC) stays sticky at top:0,
+     animated-hero pins immediately below it. Both share a single stage so
+     the whole opening frame stays visually fixed while the product image
+     animation plays from scroll 0 — no dead-zone before it begins. -->
+<div class="pinned-stage">
+  <!-- CURSOR-INTERACTIVE OPENING HERO -->
+  <section class="cursor-hero" id="top">
+    <h1 class="cursor-hero-text" id="cursorHeroText" aria-label="Mabel Kasunic">
+      <span class="ch-word" data-word="MABEL"></span>
+      <span class="ch-word" data-word="KASUNIC"></span>
+    </h1>
+  </section>
 
-  <!-- HERO / ABOUT -->
-  <section class="hero" id="about">
-    <div class="hero-grid">
-      <div class="portrait-wrap">
-        <div class="blob" data-blob></div>
-        <div class="blob b2" data-blob></div>
-        <div class="portrait">
-          <img src="portrait.jpg" alt="Portrait" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(1) contrast(1.05);" />
+  <!-- ANIMATED TEXT HERO (pinned: scroll drives the image drop/grow + text
+       converge animation while the section stays visually fixed) -->
+  <div class="animated-hero-pin">
+    <section class="animated-hero">
+      <div class="hero-row">
+        <div class="hero-side hero-side-left">A Product</div>
+
+        <div class="hero-center-group">
+          <div class="hero-labels">
+            <span>Industrial Design</span>
+            <span>2026</span>
+          </div>
+          <div class="hero-image" aria-hidden="true">
+            <div class="placeholder-img"><span>Product Image</span></div>
+          </div>
         </div>
+
+        <div class="hero-side hero-side-right">Designer</div>
       </div>
 
-      <div class="lede">
-        <div class="eyebrow"><span class="ast">✻</span> About me</div>
-        <h1 class="display" data-tw="tagline">
-          A multidisciplinary <em>designer</em> with a soft spot for playful yet minimalistic and definitively functional designs.
-        </h1>
-        <p>I thrive on solving challenges and bringing innovative ideas to life. My approach to design is as fluid as the challenges themselves — one-size-fits-all is a myth, and great work happens by constantly evolving and adapting.</p>
-        <p>Currently open to new collaborations across brand, product, and editorial. <a href="#contact" style="text-decoration: underline; text-underline-offset: 4px;">Let's talk →</a></p>
+      <div class="hero-scroll">Scroll Down</div>
+    </section>
+  </div>
+</div>
+
+<main>
+
+  <!-- ---------- Bio → Design-practice swirl morph ----------
+       Both sections share a sticky overlay (.swirl-layer) holding three
+       blurred orbs. As you scroll, JS interpolates each orb between its
+       "bio composition" anchor (flanking the portrait, from bio 1.svg) and
+       its "design-practice composition" anchor (around the stroked circle
+       in #design-practice, from design practice.svg). The yellow orb is
+       hidden in bio and fades in across the morph. -->
+  <div class="swirl-stage">
+    <div class="swirl-layer" aria-hidden="true">
+      <div class="orb orb-cyan">
+        <svg viewBox="0 0 600 600">
+          <defs><clipPath id="orbCyanClip"><circle cx="300" cy="300" r="298"/></clipPath></defs>
+          <g clip-path="url(#orbCyanClip)">
+            <circle cx="300" cy="300" r="322" fill="#B9FFFC"/>
+            <g class="orb-rot"><circle cx="300" cy="492" r="232" fill="#ffffff"/></g>
+            <g class="orb-rot2"><circle cx="452" cy="208" r="152" fill="#e7fffe" opacity="0.9"/></g>
+          </g>
+        </svg>
+      </div>
+      <div class="orb orb-pink">
+        <svg viewBox="0 0 600 600">
+          <defs><clipPath id="orbPinkClip"><circle cx="300" cy="300" r="298"/></clipPath></defs>
+          <g clip-path="url(#orbPinkClip)">
+            <circle cx="300" cy="300" r="322" fill="#FF92D7"/>
+            <g class="orb-rot"><circle cx="300" cy="492" r="232" fill="#ffffff"/></g>
+            <g class="orb-rot2"><circle cx="448" cy="210" r="154" fill="#ffd9f1" opacity="0.9"/></g>
+          </g>
+        </svg>
+      </div>
+      <div class="orb orb-yellow">
+        <svg viewBox="0 0 600 600">
+          <defs><clipPath id="orbYellowClip"><circle cx="300" cy="300" r="298"/></clipPath></defs>
+          <g clip-path="url(#orbYellowClip)">
+            <circle cx="300" cy="300" r="322" fill="#FCFFA7"/>
+            <g class="orb-rot"><circle cx="300" cy="492" r="232" fill="#ffffff"/></g>
+            <g class="orb-rot2"><circle cx="452" cy="208" r="152" fill="#fffce0" opacity="0.9"/></g>
+          </g>
+        </svg>
       </div>
     </div>
-  </section>
+
+    <!-- HERO / ABOUT -->
+    <section class="hero" id="about">
+      <div class="hero-grid">
+        <div class="portrait-wrap">
+          <div class="portrait">
+            <img src="portrait.jpg" alt="Portrait of Mabel Kasunic" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(1) contrast(1.05);" />
+          </div>
+        </div>
+
+        <div class="lede">
+          <div class="eyebrow reveal" style="--d:0.05s"><span class="ast">✻</span> About me</div>
+          <h1 class="display reveal" style="--d:0.18s" data-tw="tagline">
+            I design digital and physical <em class="grad">experiences</em> built around participation, curiosity, and connection.
+          </h1>
+          <p class="reveal" style="--d:0.5s">I design with empathy, curiosity, and adaptability, approaching every challenge with the understanding that meaningful experiences are never one-size-fits-all. I'm driven by creating thoughtful ideas that evolve through people, interaction, and real-world connection.</p>
+          <p class="reveal" style="--d:0.62s">Currently exploring the space between digital interaction and real-world experience. <a href="#contact" style="text-decoration: underline; text-underline-offset: 4px;">Let's talk →</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESIGN PRACTICE — central stroked circle, the destination of the orb morph
+         (matches design practice.svg). The "What I do" section follows below.
+         Labels (yellow/cyan/pink) sit at the same fractional offsets the orbs
+         settle into, so each label lands centred on its orb. -->
+    <section id="design-practice">
+      <div class="dp-grid">
+        <div class="eyebrow reveal-dp"><span class="ast">✻</span> Design practice</div>
+        <h2 class="dp-heading reveal-dp">A circular way of <em>thinking</em>.</h2>
+        <div class="dp-frame">
+          <div class="dp-circle" aria-hidden="true"></div>
+          <div class="dp-center reveal-dp">My design<br>practice.</div>
+          <span class="dp-label dp-label-yellow reveal-dp">UX/UI</span>
+          <span class="dp-label dp-label-cyan reveal-dp">Experiential systems</span>
+          <span class="dp-label dp-label-pink reveal-dp">Interaction design</span>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- WHAT I DO -->
   <section id="skills">
@@ -734,6 +1482,399 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 
 <script>
+  // ---------- Preloader: counts 000 → 100, then wipes up ----------
+  (function () {
+    const pre = document.getElementById('preloader');
+    const countEl = document.getElementById('preloaderCount');
+    if (!pre || !countEl) { document.body.classList.add('loaded'); return; }
+
+    const DURATION = 2400; // ms to count from 0 to 100
+    const startT = performance.now();
+
+    function step(now) {
+      const t = Math.min(1, (now - startT) / DURATION);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic — fast, then settles
+      countEl.textContent = String(Math.round(eased * 100)).padStart(3, '0');
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        // Wipe the dark panel up; reveal the hero underneath and let its
+        // intro animations begin (gated on body.loaded).
+        pre.classList.add('done');
+        document.body.classList.add('loaded');
+        pre.addEventListener('transitionend', () => pre.remove(), { once: true });
+        setTimeout(() => pre.remove(), 1400); // fallback if transitionend misses
+      }
+    }
+    requestAnimationFrame(step);
+  })();
+
+  // ---------- Cursor-interactive opening hero ----------
+  (function () {
+    const root = document.getElementById('cursorHeroText');
+    if (!root) return;
+
+    // One span per letter — JS squishes each horizontally toward the cursor.
+    root.querySelectorAll('.ch-word').forEach(wordEl => {
+      const word = wordEl.dataset.word || wordEl.textContent;
+      wordEl.textContent = '';
+      for (const char of word) {
+        const span = document.createElement('span');
+        span.className = 'ch';
+        span.textContent = char;
+        wordEl.appendChild(span);
+      }
+    });
+
+    const letters = Array.from(root.querySelectorAll('.ch'));
+    const heroEl = document.querySelector('.cursor-hero');
+    const MAX_SQUISH = 0.9; // letter scaleX bottoms out at 1 - 0.9 = 0.1
+    const LERP = 0.22;
+
+    // Rest-position metrics. Letters move during the intro (slideToTop +
+    // heroShrink), so re-measure periodically until that settles, and on resize.
+    let metrics = [];
+    let hRadius = 320, vRadius = 220, lineCy = 0;
+    function measure() {
+      letters.forEach(l => {
+        l.style.transform = '';
+        l.style.marginLeft = '';
+        l.style.marginRight = '';
+      });
+      const rootR = root.getBoundingClientRect();
+      lineCy = rootR.top + rootR.height / 2;
+      let sumW = 0;
+      metrics = letters.map(l => {
+        const r = l.getBoundingClientRect();
+        sumW += r.width;
+        return { cx: r.left + r.width / 2, w: r.width };
+      });
+      const avgW = sumW / Math.max(1, letters.length);
+      hRadius = avgW * 3.2;          // pinch spans ~3 letters either side
+      vRadius = rootR.height * 0.9;  // effect fades as the cursor leaves the line
+    }
+
+    let targetX = -99999, targetY = -99999;
+    let currX = -99999, currY = -99999;
+    let running = false;
+
+    function frame() {
+      currX += (targetX - currX) * LERP;
+      currY += (targetY - currY) * LERP;
+
+      const vFactor = Math.max(0, 1 - Math.abs(currY - lineCy) / vRadius);
+
+      for (let i = 0; i < letters.length; i++) {
+        const m = metrics[i];
+        if (!m) continue;
+        let f = Math.max(0, 1 - Math.abs(currX - m.cx) / hRadius) * vFactor;
+        f = f * f * (3 - 2 * f); // smoothstep falloff
+        const scaleX = 1 - f * MAX_SQUISH;
+        const lost = m.w * (1 - scaleX);
+        const l = letters[i];
+        l.style.transform = `scaleX(${scaleX.toFixed(3)})`;
+        l.style.marginLeft = l.style.marginRight = (-lost / 2).toFixed(2) + 'px';
+      }
+
+      if (Math.abs(targetX - currX) > 0.3 || Math.abs(targetY - currY) > 0.3) {
+        requestAnimationFrame(frame);
+      } else {
+        running = false;
+      }
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      requestAnimationFrame(frame);
+    }
+
+    measure();
+    const introMeasure = setInterval(measure, 200);
+    setTimeout(() => { clearInterval(introMeasure); measure(); }, 6500);
+    window.addEventListener('resize', measure);
+
+    heroEl.addEventListener('mousemove', e => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      start();
+    });
+    heroEl.addEventListener('mouseleave', () => {
+      targetX = -99999;
+      targetY = -99999;
+      start();
+    });
+    heroEl.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      if (!t) return;
+      targetX = t.clientX;
+      targetY = t.clientY;
+      start();
+    }, { passive: true });
+    heroEl.addEventListener('touchend', () => {
+      targetX = -99999;
+      targetY = -99999;
+      start();
+    });
+  })();
+
+  // ---------- Scroll-triggered animated hero ----------
+  (function () {
+    const target = document.querySelector('.animated-hero');
+    if (!target) return;
+    const heroEl = document.getElementById('about');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    io.observe(target);
+
+    // Phase 2 — scroll-linked progress (0 → 1), driven by how far we've
+    // scrolled into the pin track. While progress is in (0, 1) the sticky
+    // section stays pinned at top:0, so the visible page appears frozen —
+    // only the text and image animate. After progress = 1, the pin track
+    // ends and normal vertical scrolling resumes.
+    const pin = target.parentElement;
+    const row = target.querySelector('.hero-row');
+    const leftWord = target.querySelector('.hero-side-left');
+    const rightWord = target.querySelector('.hero-side-right');
+    const image = target.querySelector('.hero-image');
+
+    // Measure rest geometry, then derive exact transforms:
+    //  • words : distance to travel so they meet edge-to-edge (never overlap)
+    //  • image : shift to re-centre + drop below the words, plus the scale
+    //            factor that grows it to the full content width.
+    // Transforms are zeroed first so getBoundingClientRect reads rest positions.
+    const measure = () => {
+      if (!row || !leftWord || !rightWord || !image) return;
+      target.style.setProperty('--converge-left', '0px');
+      target.style.setProperty('--converge-right', '0px');
+      target.style.setProperty('--img-tx', '0px');
+      target.style.setProperty('--img-ty', '0px');
+      target.style.setProperty('--img-scale', '1');
+      if (window.innerWidth <= 880) {
+        // Stacked layout on mobile: image never grows, so drop the measured
+        // clearance and let the CSS clamp fallback handle the top spacing.
+        if (heroEl) heroEl.style.removeProperty('padding-top');
+        return;
+      }
+
+      const rowR = row.getBoundingClientRect();
+      const lR = leftWord.getBoundingClientRect();
+      const rR = rightWord.getBoundingClientRect();
+      const imgR = image.getBoundingClientRect();
+      const rowCenterX = rowR.left + rowR.width / 2;
+
+      // words meet as one centred phrase
+      const fs = parseFloat(getComputedStyle(leftWord).fontSize) || 80;
+      const gap = fs * 0.34; // a single space between the two words when met
+      const total = lR.width + gap + rR.width;
+      const phraseLeft = rowCenterX - total / 2;
+      target.style.setProperty('--converge-left',  (phraseLeft - lR.left).toFixed(1) + 'px');
+      target.style.setProperty('--converge-right', (phraseLeft + lR.width + gap - rR.left).toFixed(1) + 'px');
+
+      // image drops just below the words (centred), then scales to full row width
+      const desiredTop = Math.max(lR.bottom, rR.bottom) + window.innerHeight * 0.04;
+      target.style.setProperty('--img-tx', (rowCenterX - (imgR.left + imgR.width / 2)).toFixed(1) + 'px');
+      target.style.setProperty('--img-ty', (desiredTop - imgR.top).toFixed(1) + 'px');
+      const imgScale = rowR.width / imgR.width;
+      target.style.setProperty('--img-scale', imgScale.toFixed(3));
+
+      // The image scales (origin: center top) past this section's bottom edge.
+      // Push the following About section down by exactly the overflow plus
+      // a little breathing room so its content never collides with the
+      // fully-grown image. Scroll-position-invariant: both rects below are
+      // read in the same synchronous pass.
+      if (heroEl) {
+        const sectionTop = target.getBoundingClientRect().top;
+        const grownBottom = (desiredTop - sectionTop) + imgR.height * imgScale;
+        const imgOverflow = Math.max(0, grownBottom - target.offsetHeight);
+        const clear = imgOverflow + window.innerHeight * 0.10;
+        heroEl.style.paddingTop = Math.round(clear) + 'px';
+      }
+    };
+
+    const clamp01 = v => Math.max(0, Math.min(1, v));
+    const cursorHeroEl = document.querySelector('.cursor-hero');
+    const update = () => {
+      const pinRect = pin.getBoundingClientRect();
+      // Sticky offset: animated-hero is pinned just below the sticky cursor-hero,
+      // so the pin track starts at scroll 0 (pinRect.top === stickyTop) and ends
+      // when sticky releases. This makes the image drop the moment the user
+      // starts scrolling — no dead-zone first.
+      const stickyTop = cursorHeroEl ? cursorHeroEl.offsetHeight : 0;
+      const trackLength = pin.offsetHeight - (window.innerHeight - stickyTop);
+      const progress = clamp01((stickyTop - pinRect.top) / trackLength);
+      // Stage 1 image drop (0–0.30), stage 2 image grow (0.30–0.65),
+      // stage 3 words converge (0.65–1).
+      target.style.setProperty('--phase-progress', progress.toFixed(3));
+      target.style.setProperty('--imgdown-progress', clamp01(progress / 0.30).toFixed(3));
+      target.style.setProperty('--imggrow-progress', clamp01((progress - 0.30) / 0.35).toFixed(3));
+      target.style.setProperty('--text-progress',    clamp01((progress - 0.65) / 0.35).toFixed(3));
+    };
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { measure(); update(); });
+    // Re-measure once the Chreed font has loaded — glyph widths shift the layout.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    measure();
+    update();
+  })();
+
+  // ---------- Bio section: wipe-reveal trigger ----------
+  // Adds .in-view to the about section once its grid scrolls into view,
+  // which starts the staggered clip-path wipes for the bio copy.
+  (function () {
+    const hero = document.getElementById('about');
+    const grid = hero && hero.querySelector('.hero-grid');
+    if (!hero || !grid) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          hero.classList.add('in-view');
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.18 });
+    io.observe(grid);
+  })();
+
+  // ---------- Swirl morph: bio composition → design-practice composition ----------
+  // Three orbs (cyan, pink, yellow) live on a sticky overlay spanning the
+  // bio + design-practice sections. As you scroll, JS interpolates each orb
+  // between two anchor points read live from the DOM:
+  //   • Bio anchor    — orb sits around the portrait (flanking it, top-left
+  //                     for cyan, right of text for pink, like bio 1.svg).
+  //   • DP anchor     — orb sits at its slot around the .dp-circle (mirrors
+  //                     the three orb positions in design practice.svg).
+  // Progress is driven by where the portrait centre and the dp-circle centre
+  // are relative to the viewport centre — so the morph completes naturally
+  // as the user scrolls one composition out and the other in.
+  (function () {
+    const stage = document.querySelector('.swirl-stage');
+    const portrait = document.querySelector('.portrait-wrap');
+    const dpCircle = document.querySelector('.dp-circle');
+    const cyanEl = document.querySelector('.orb-cyan');
+    const pinkEl = document.querySelector('.orb-pink');
+    const yellowEl = document.querySelector('.orb-yellow');
+    const dpReveal = document.querySelectorAll('#design-practice .reveal-dp');
+    if (!stage || !portrait || !dpCircle || !cyanEl || !pinkEl || !yellowEl) return;
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp01 = v => Math.max(0, Math.min(1, v));
+
+    function setOrb(el, x, y, s, rot, opacity) {
+      // The orb is centred on (x, y) thanks to its negative margins.
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s}) rotate(${rot}deg)`;
+      if (opacity !== undefined) el.style.opacity = opacity.toFixed(3);
+    }
+
+    function update() {
+      const pRect = portrait.getBoundingClientRect();
+      const dRect = dpCircle.getBoundingClientRect();
+      const winH = window.innerHeight;
+      const winW = window.innerWidth;
+
+      // Anchor on the centres of the portrait + dp-circle in viewport coords.
+      const portraitCx = pRect.left + pRect.width / 2;
+      const portraitCy = pRect.top + pRect.height / 2;
+      const dpCx = dRect.left + dRect.width / 2;
+      const dpCy = dRect.top + dRect.height / 2;
+
+      // Progress: 0 when the portrait sits at viewport centre, 1 when the
+      // dp-circle sits at viewport centre. Distance between the two centres
+      // is fixed in document flow, so this is monotonic with scroll.
+      const dist = Math.max(1, dpCy - portraitCy);
+      const p = clamp01((winH / 2 - portraitCy) / dist);
+
+      // Orbs SETTLE by p=0.70 (the remaining scroll just holds the settled
+      // composition). This guarantees that when the text/label fade-in
+      // begins (p≥0.70 below), the orbs are already at the DP anchors —
+      // so the CSS-positioned labels line up exactly with the orbs they sit on.
+      const tRaw = clamp01(p / 0.70);
+      const t = tRaw * tRaw * (3 - 2 * tRaw);
+
+      // ---- Bio anchors (mirrors bio 1.svg: cyan top-left of portrait, pink right of text) ----
+      const orbBaseR = 300;                       // half the .orb width (base size, before scale)
+      const bioScale = (pRect.width * 1.35) / (orbBaseR * 2);  // big disc like bio 1.svg
+      const bioCyan  = { x: portraitCx - pRect.width * 0.55, y: portraitCy - pRect.height * 0.40, s: bioScale };
+      const bioPink  = { x: Math.min(winW - 80, portraitCx + pRect.width * 2.2),
+                         y: portraitCy + pRect.height * 0.15, s: bioScale * 0.9 };
+      // Yellow starts tucked behind cyan, hidden — emerges during the morph.
+      const bioYellow = { x: bioCyan.x + 40, y: bioCyan.y + 30, s: bioScale * 0.5 };
+
+      // ---- DP anchors (mirrors design practice.svg: 3 orbs around the stroked circle) ----
+      // Orbs sit on the circle's edge, sized so their labels read clearly on
+      // top and the yellow doesn't reach into the heading above. Orb element
+      // is 600px base → dpScale = 0.45 × circleDiameter / 600.
+      const r = dRect.width / 2;
+      const dpScale = (dRect.width * 0.45) / 600;
+      // Triangular composition: yellow top, cyan right, pink bottom-left.
+      // Pulled inward from the SVG ref so each orb fully encloses its label
+      // and yellow clears the "circular way of thinking" heading.
+      const dpYellow = { x: dpCx - r * 0.32, y: dpCy - r * 0.62, s: dpScale };
+      const dpCyan   = { x: dpCx + r * 0.72, y: dpCy + r * 0.18, s: dpScale };
+      const dpPink   = { x: dpCx - r * 0.55, y: dpCy + r * 0.55, s: dpScale };
+
+      // Rotation accumulates with progress — about 1.5 turns across the morph.
+      const rot = t * 540;
+
+      // Cyan + pink stay fully opaque the whole way; the heavy blur already
+      // softens them. Yellow fades in across the middle of the morph.
+      setOrb(cyanEl,
+        lerp(bioCyan.x, dpCyan.x, t),
+        lerp(bioCyan.y, dpCyan.y, t),
+        lerp(bioCyan.s, dpCyan.s, t),
+        rot, 1);
+      setOrb(pinkEl,
+        lerp(bioPink.x, dpPink.x, t),
+        lerp(bioPink.y, dpPink.y, t),
+        lerp(bioPink.s, dpPink.s, t),
+        -rot * 0.85, 1);
+      // Yellow fades in across the early-mid morph (0.25 → 0.60) so it has
+      // settled into its slot before the text appears.
+      const yOp = clamp01((p - 0.25) / 0.35);
+      setOrb(yellowEl,
+        lerp(bioYellow.x, dpYellow.x, t),
+        lerp(bioYellow.y, dpYellow.y, t),
+        lerp(bioYellow.s, dpYellow.s, t),
+        rot * 1.15, yOp);
+
+      // Heading + eyebrow + centre text + orb labels all resolve in together
+      // AFTER the orbs have settled (orbs are at full DP anchors by p=0.70).
+      // Text fades 0.70 → 0.95, so the CSS-positioned labels always sit on
+      // top of the settled orbs. Opacity-only so each element's own
+      // positioning transform (e.g. translate(-50%,-50%)) is preserved.
+      const textP = clamp01((p - 0.70) / 0.25);
+      const textOp = textP * textP * (3 - 2 * textP); // smoothstep
+      for (let i = 0; i < dpReveal.length; i++) {
+        dpReveal[i].style.opacity = textOp.toFixed(3);
+      }
+    }
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', update);
+    // Re-run once layout settles (fonts can shift the portrait/dp positions).
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+    update();
+  })();
+
+
   // Live clock in ribbon
   function tick() {
     const d = new Date();
@@ -763,7 +1904,7 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     document.querySelectorAll('[data-tw="projectCount"]').forEach(el => el.textContent = t.projectCount || 12);
 
     const tagline = (t.tagline || '')
-      .replace('__ROLE__', `<em>${t.role || 'designer'}</em>`)
+      .replace('__ROLE__', `<em class="grad">${t.role || 'experiences'}</em>`)
       .replace('__SOFTSPOT__', t.softSpot || '');
     const taglineEl = document.querySelector('[data-tw="tagline"]');
     if (taglineEl) taglineEl.innerHTML = tagline;
@@ -794,7 +1935,7 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
         </TweakSection>
 
         <TweakSection title="Tagline">
-          <TweakText label="Soft spot for…" value={t.softSpot} onChange={v => setTweak('softSpot', v)} multiline />
+          <TweakText label="Built around…" value={t.softSpot} onChange={v => setTweak('softSpot', v)} multiline />
         </TweakSection>
 
         <TweakSection title="Palette">

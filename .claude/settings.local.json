@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '{ if \\(length\\($0\\) > 300\\) print NR\": [LONG LINE \"length\\($0\\)\" chars]\"; else print NR\": \"$0 }' \"bio 1.svg\")",
+      "Bash(awk 'NR>=38 && NR<=41' \"bio 1.svg\")",
+      "Bash(grep -oE '<[a-zA-Z/][^>]{0,400}')",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(npm ls *)",
+      "PowerShell($d = \"C:\\\\Users\\\\mabel\\\\AppData\\\\Local\\\\Temp\\\\puppeteer-verify\"; if \\(-not \\(Test-Path $d\\)\\) { New-Item -ItemType Directory -Path $d | Out-Null }; Set-Location $d; npm init -y 2>&1 | Out-Null; npm install puppeteer-core@22 --no-audit --no-fund --silent 2>&1 | Select-Object -Last 3)"
+    ]
+  }
+}
