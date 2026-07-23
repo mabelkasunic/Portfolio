@@ -910,6 +910,12 @@
     line-height: 1;
     margin: 0 0 60px;
   }
+  .section-label.chreed-label,
+  .section-label.chreed-label em {
+    font-family: "Chreed", var(--sans);
+    font-style: normal;
+    text-transform: uppercase;
+  }
 
   /* ---------- What I do ---------- */
   .skills { display: grid; grid-template-columns: 1fr 1fr; gap: 70px 60px; }
@@ -1240,7 +1246,7 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
             <span>2026</span>
           </div>
           <div class="hero-image" aria-hidden="true">
-            <img src="image highlight.png" alt="Product" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            <img src="image highlight.png" alt="Product" style="width:100%;height:100%;object-fit:cover;display:block;" />
           </div>
         </div>
 
@@ -1334,114 +1340,17 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     </section>
   </div>
 
-  <!-- WHAT I DO -->
-  <section id="skills">
-    <div class="grid">
-      <h2 class="section-label"><em>What I do</em></h2>
-
-      <div class="skills">
-        <div>
-          <div class="cat-label"><span class="swatch pink"></span> Graphic design</div>
-          <ul>
-            <li>Branding &amp; visual identity</li>
-            <li>Print &amp; editorial</li>
-            <li>Social media design</li>
-            <li>Digital marketing</li>
-          </ul>
-        </div>
-
-        <div>
-          <div class="cat-label"><span class="swatch green"></span> Visual design</div>
-          <ul>
-            <li>Web design</li>
-            <li>UI design</li>
-          </ul>
-        </div>
-
-        <div>
-          <div class="cat-label"><span class="swatch violet"></span> Web development</div>
-          <ul>
-            <li>Static website development</li>
-            <li>CMS &amp; Webflow</li>
-          </ul>
-        </div>
-
-        <div>
-          <div class="cat-label"><span class="swatch peach"></span> Misc.</div>
-          <ul>
-            <li>Social media management</li>
-            <li>Content writing</li>
-            <li>Photography</li>
-          </ul>
-        </div>
-
-        <div style="grid-column: 1 / -1;">
-          <div class="cat-label"><span class="swatch amber"></span> Software &amp; tech</div>
-          <ul>
-            <li><span style="color: var(--muted);">Design —</span> Adobe Photoshop, Illustrator, InDesign, Figma, Canva</li>
-            <li><span style="color: var(--muted);">Web —</span> HTML, CSS, JavaScript, 11ty, Webflow</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJECT INDEX -->
-  <section id="projects">
-    <div class="projects-head">
-      <h2 class="section-label">Selected <em>projects</em></h2>
-      <span class="projects-count">— 06 of <span data-tw="projectCount">12</span></span>
-    </div>
-
-    <div class="project-list">
-      <a class="project" href="#">
-        <span class="num">01</span>
-        <span class="title">Project Title One</span>
-        <span class="meta">Branding · 2026</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="project" href="#">
-        <span class="num">02</span>
-        <span class="title">A second piece of work</span>
-        <span class="meta">Web · 2026</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="project" href="#">
-        <span class="num">03</span>
-        <span class="title">An editorial book design</span>
-        <span class="meta">Print · 2025</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="project" href="#">
-        <span class="num">04</span>
-        <span class="title">Mobile app UI exploration</span>
-        <span class="meta">Product · 2025</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="project" href="#">
-        <span class="num">05</span>
-        <span class="title">Identity for a small studio</span>
-        <span class="meta">Branding · 2024</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="project" href="#">
-        <span class="num">06</span>
-        <span class="title">Photography series</span>
-        <span class="meta">Photo · 2024</span>
-        <span class="arrow">↗</span>
-      </a>
-    </div>
-  </section>
-
   <!-- SELECTED WORKS GRID -->
   <section id="works">
-    <h2 class="section-label">Featured <em>case studies</em></h2>
+    <h2 class="section-label chreed-label">Featured <em>case studies</em></h2>
 
     <div class="works">
-      <a class="work">
-        <div class="thumb tone-1" data-label="REPLACE WITH IMAGE"></div>
-        <div class="row"><h3>Project name</h3><span class="tag">Brand · 2026</span></div>
-        <p>Short description of the project. Two lines max — keep it tight.</p>
+      <a class="work" href="https://mabelkasunic.github.io/ShopifyFront/" target="_blank" rel="noopener noreferrer">
+        <div class="thumb">
+          <img src="laptop sky 2.png" alt="Project thumbnail" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+        <div class="row"><h3>Shopify Front</h3><span class="tag">Brand · 2026</span></div>
+        <p>Shopify Front transforms retail into a live testing environment for small businesses — making physical space as accessible as launching a website.</p>
       </a>
       <a class="work">
         <div class="thumb tone-2" data-label="REPLACE WITH IMAGE"></div>
@@ -1458,6 +1367,56 @@ window.__TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
         <div class="row"><h3>Fourth piece</h3><span class="tag">Product · 2024</span></div>
         <p>One short sentence about the work and your role.</p>
       </a>
+    </div>
+  </section>
+
+  <!-- WHAT I DO -->
+  <section id="skills">
+    <div class="grid">
+      <h2 class="section-label chreed-label"><em>Capabilities</em></h2>
+
+      <div class="skills">
+        <div>
+          <div class="cat-label"><span class="swatch pink"></span> Skills</div>
+          <ul>
+            <li>Human-Centered Design</li>
+            <li>Strategic Thinking &amp; Foresight</li>
+            <li>Brand &amp; Experience Design</li>
+            <li>Research &amp; Insight Development</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch violet"></span> Software</div>
+          <ul>
+            <li>Adobe Creative Suite</li>
+            <li>Figma / Framer</li>
+            <li>Claude</li>
+            <li>VS Code</li>
+            <li>HTML / CSS / JavaScript</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch green"></span> Workflow</div>
+          <ul>
+            <li>Concept Development</li>
+            <li>Rapid Prototyping &amp; Iteration</li>
+            <li>Visual Storytelling</li>
+            <li>AI-assisted Design</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="cat-label"><span class="swatch peach"></span> Engagement</div>
+          <ul>
+            <li>Client &amp; Customer Interaction</li>
+            <li>Presentation &amp; Communication</li>
+            <li>Project Management</li>
+            <li>Collaborative Facilitation</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
