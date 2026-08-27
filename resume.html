@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Résumé — Mabel Kasunic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=DM+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  @font-face {
+    font-family: "Chreed";
+    src: url("chreed/Chreed-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #f6f4ef;
+    --ink: #161513;
+    --muted: #6c6a64;
+    --rule: rgba(22, 21, 19, 0.12);
+    --serif: "Fraunces", "Times New Roman", serif;
+    --sans: "Geist", system-ui, -apple-system, sans-serif;
+    --mono: "DM Mono", ui-monospace, monospace;
+    --gutter: clamp(20px, 4vw, 56px);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  @media (hover: hover) and (pointer: fine) {
+    * { cursor: none !important; }
+    .custom-cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      border-radius: 50%;
+      background: #FF69c8;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-100px, -100px, 0);
+      transition: transform 0.08s ease-out, opacity 0.2s ease;
+    }
+  }
+
+  /* ---------- Top nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto 1fr;
+    gap: clamp(24px, 6vw, 90px);
+    padding: 16px var(--gutter);
+    background: transparent;
+    z-index: 50;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    mix-blend-mode: normal;
+  }
+  .nav a { position: relative; padding: 4px 2px; }
+  .nav .brand { justify-self: start; }
+  .nav .end { justify-self: end; }
+  .nav a .sup {
+    font-size: 10px;
+    vertical-align: super;
+    margin-left: 2px;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .nav a:hover::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 1px; background: var(--ink);
+  }
+  .nav a.current::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 1px; background: var(--ink);
+  }
+
+  /* ---------- Corner flower mark ---------- */
+  .corner-mark {
+    position: fixed;
+    left: var(--gutter); bottom: 22px;
+    z-index: 40;
+    width: 28px; height: 28px;
+  }
+  .corner-mark svg { width: 100%; height: 100%; }
+
+  .scroll-top {
+    position: fixed;
+    right: 18px; bottom: 22px;
+    z-index: 40;
+    width: 22px; height: 22px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* ---------- Blank canvas ---------- */
+  main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 110px var(--gutter) 80px;
+  }
+  .placeholder {
+    text-align: center;
+    color: var(--muted);
+  }
+  .placeholder .eyebrow {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .placeholder h1 {
+    font-family: "Chreed", var(--serif);
+    font-weight: 700;
+    font-size: clamp(40px, 8vw, 72px);
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 14px 0 0;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Résumé preview ---------- */
+  .resume-card {
+    display: block;
+    width: clamp(220px, 30vw, 300px);
+    aspect-ratio: 8.5 / 11;
+    margin: 22px auto 0;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 18px 40px rgba(22, 21, 19, 0.08);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .resume-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px rgba(22, 21, 19, 0.14);
+  }
+  .resume-card embed {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: block;
+  }
+  .resume-card .resume-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(246, 244, 239, 0.88);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .resume-card:hover .resume-card-overlay { opacity: 1; }
+  .resume-download {
+    display: inline-block;
+    margin-top: 18px;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+  }
+
+  @media (max-width: 720px) {
+    .nav { grid-template-columns: 1fr auto; gap: 16px; }
+    .nav .brand { grid-column: 1; }
+    .nav .end { grid-column: 2; }
+    .nav a:not(.brand):not(.end) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom dot cursor -->
+<div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
+<script>
+  (function () {
+    var dot = document.getElementById('customCursor');
+    if (!dot || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    window.addEventListener('mousemove', function (e) {
+      dot.style.transform = 'translate3d(' + e.clientX + 'px, ' + e.clientY + 'px, 0)';
+    });
+    document.addEventListener('mouseleave', function () { dot.style.opacity = '0'; });
+    document.addEventListener('mouseenter', function () { dot.style.opacity = '1'; });
+  })();
+</script>
+
+<!-- Top nav -->
+<nav class="nav">
+  <a class="brand" href="index.html">Mabel Kasunic</a>
+  <a class="nav-link" href="index.html#projects">Projects</a>
+  <a class="nav-link" href="about.html">About</a>
+  <a class="nav-link current" href="resume.html">Résumé ↗</a>
+  <a class="end" href="index.html#contact">Contact</a>
+</nav>
+
+<!-- Corner flower mark -->
+<div class="corner-mark" aria-hidden="true">
+  <svg viewBox="0 0 100 100">
+    <g fill="#161513">
+      <circle cx="50" cy="22" r="14"/>
+      <circle cx="78" cy="42" r="14"/>
+      <circle cx="68" cy="74" r="14"/>
+      <circle cx="32" cy="74" r="14"/>
+      <circle cx="22" cy="42" r="14"/>
+      <circle cx="50" cy="50" r="6" fill="#f6f4ef"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Scroll to top -->
+<a class="scroll-top" href="#top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M12 20V4M12 4l-6 6M12 4l6 6"/>
+  </svg>
+</a>
+
+<main id="top">
+  <div class="placeholder">
+    <div class="eyebrow"><span class="ast">✻</span> Résumé</div>
+    <h1>Mabel Kasunic</h1>
+
+    <a class="resume-card" href="Kasunic_Mabel_Resume_2026.pdf" target="_blank" rel="noopener" aria-label="Open résumé PDF">
+      <embed src="Kasunic_Mabel_Resume_2026.pdf#toolbar=0&navpanes=0&view=FitH" type="application/pdf" />
+      <span class="resume-card-overlay">View résumé ↗</span>
+    </a>
+
+    <a class="resume-download" href="Kasunic_Mabel_Resume_2026.pdf" download="Kasunic_Mabel_Resume_2026.pdf">Download PDF ↓</a>
+  </div>
+</main>
+
+</body>
+</html>
