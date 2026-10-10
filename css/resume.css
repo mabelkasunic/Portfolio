@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Résumé page (resume.html) — uses base.css + project.css (footer)
+   ========================================================================== */
+
+.resume-head { padding-top: clamp(40px, 7vw, 120px); padding-bottom: 14px; border-bottom: 1px solid var(--rule); align-items: end; row-gap: 16px; }
+.resume-title { grid-column: 1 / span 8; margin: 0; font-size: clamp(44px, 7vw, 128px); font-weight: 500; letter-spacing: -.05em; line-height: 1; padding-top: .06em; }
+.resume-actions { grid-column: 9 / -1; display: flex; justify-content: flex-end; gap: clamp(20px, 2.4vw, 40px); padding-bottom: .5em; }
+.resume-actions a:hover .arrow { transform: translate(3px, -3px); }
+.resume-actions a.dl:hover .arrow { transform: translateY(3px); }
+
+.resume-body { padding-top: clamp(32px, 4vw, 64px); }
+.resume-note { grid-column: 1 / span 3; margin: 0; }
+.resume-sheet { grid-column: 4 / span 6; display: block; position: relative; background: #FFFFFF; box-shadow: 0 0 0 1px var(--rule), 0 24px 60px -30px rgba(10, 10, 10, .25); transition: box-shadow .6s var(--ease), transform .6s var(--ease); }
+.resume-sheet img { display: block; width: 100%; height: auto; }
+.resume-sheet:hover, .resume-sheet:focus-visible { transform: translateY(-4px); box-shadow: 0 0 0 1px var(--ink), 0 36px 80px -34px rgba(10, 10, 10, .35); }
+.sheet-tag { position: absolute; right: 16px; bottom: 16px; background: var(--ink); color: var(--paper); padding: 8px 12px; opacity: 0; transform: translateY(6px); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+.resume-sheet:hover .sheet-tag, .resume-sheet:focus-visible .sheet-tag { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .resume-title { grid-column: 1 / -1; }
+  .resume-actions { grid-column: 1 / -1; justify-content: flex-start; padding-bottom: 0; }
+  .resume-note { grid-column: 1 / -1; }
+  .resume-sheet { grid-column: 1 / -1; }
+}
+@media (hover: none) { .sheet-tag { opacity: 1; transform: none; } }
