@@ -74,6 +74,18 @@ img { max-width: 100%; }
   .nav-wrap { grid-column: 6 / -1; }
   .nav { gap: 16px; }
 }
+/* Small phones: name and links share the row without touching */
+@media (max-width: 480px) {
+  .header { grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; }
+  .brand { grid-column: 1; }
+  .nav-wrap { grid-column: 2; }
+  .nav { gap: 14px; }
+  .header .small { font-size: 10px; letter-spacing: .04em; }
+}
+@media (max-width: 340px) {
+  .nav { gap: 10px; }
+  .header .small { letter-spacing: .02em; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
