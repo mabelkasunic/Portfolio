@@ -9,7 +9,7 @@
    then centred. The title is only as wide as its longest line, so "I'm Mabel"
    ends exactly where "Designer" ends. */
 .about-hero { padding-top: clamp(56px, 11vw, 180px); padding-bottom: clamp(64px, 8vw, 128px); display: flex; justify-content: center; overflow: hidden; margin: 0 calc(-1 * var(--pad)); padding-left: var(--pad); padding-right: var(--pad); }
-.about-title { margin: 0; position: relative; isolation: isolate; cursor: default; font-weight: 500; font-size: min(calc((100vw - 2 * var(--pad)) / 9.9), 190px); line-height: 1; letter-spacing: -.05em; text-transform: uppercase; display: inline-flex; flex-direction: column; width: max-content; max-width: 100%; }
+.about-title { margin: 0; position: relative; isolation: isolate; cursor: default; font-weight: 500; font-size: min(calc((100vw - 2 * var(--pad)) / 10.4), 190px); line-height: 1; letter-spacing: -.05em; text-transform: uppercase; display: inline-flex; flex-direction: column; width: max-content; max-width: 100%; }
 .a-row { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: .3em; white-space: nowrap; }
 .line { display: block; overflow: hidden; padding-top: .06em; padding-bottom: .04em; padding-right: .02em; }
 .line > span { display: block; transform: translateY(110%); transition: transform 1.15s var(--ease); }

@@ -17,6 +17,33 @@
     el.textContent = String(new Date().getFullYear());
   });
 
+  /* ---------- Fit big titles to the page width ----------
+     The name (and the About title) are sized in CSS to roughly fill the width, but
+     letter widths vary by font and computer. This measures the real rendered width
+     and scales the type so it fills the space exactly without ever being cut off. */
+  function fitTitles() {
+    document.querySelectorAll('[data-fit]').forEach(function (el) {
+      el.style.fontSize = '';
+      var max = parseFloat(el.getAttribute('data-fit-max')) || Infinity;
+      var parent = el.parentElement, ps = getComputedStyle(parent);
+      var avail = parent.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight);
+      var lines = el.querySelectorAll('.line');
+      var left = Infinity, right = -Infinity;
+      lines.forEach(function (l) { var r = l.getBoundingClientRect(); left = Math.min(left, r.left); right = Math.max(right, r.right); });
+      var used = right - left;
+      if (!used || !avail) return;
+      var size = parseFloat(getComputedStyle(el).fontSize) * (avail / used) * 0.995;
+      el.style.fontSize = Math.min(size, max) + 'px';
+    });
+  }
+  fitTitles();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitles);
+  var fitFrame;
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(fitFrame);
+    fitFrame = requestAnimationFrame(fitTitles);
+  });
+
   /* ---------- Scroll reveals ---------- */
   var pending = [];
   function show(el) { el.classList.add('is-in'); }

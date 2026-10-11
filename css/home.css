@@ -20,7 +20,7 @@
 /* Hero */
 .hero { padding-top: clamp(56px, 11vw, 180px); padding-bottom: clamp(64px, 8vw, 128px); }
 /* The name always fills the content width: it scales down on phones and up on large screens (capped at 250px). */
-.name { margin: 0 0 0 -.04em; font-weight: 500; font-size: min(250px, calc((100vw - 2 * var(--pad)) / 7.45)); line-height: 1; letter-spacing: -.05em; white-space: nowrap; display: flex; gap: .2em; }
+.name { margin: 0 0 0 -.04em; font-weight: 500; font-size: min(250px, calc((100vw - 2 * var(--pad)) / 7.9)); line-height: 1; letter-spacing: -.05em; white-space: nowrap; display: flex; gap: .2em; }
 .line { display: block; overflow: hidden; padding-top: .06em; padding-bottom: .04em; padding-right: .02em; }
 .line > span { display: block; transform: translateY(110%); transition: transform 1.15s var(--ease); }
 .line:nth-child(2) > span { transition-delay: .06s; }
