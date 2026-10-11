@@ -22,7 +22,7 @@
    so they stay locked to the words at any screen size. */
 .doodle { position: absolute; display: block; height: auto; pointer-events: none; user-select: none; opacity: 0; }
 .dd-star { left: -7.5%; top: -.63em; width: 25%; z-index: 0; transform: scale(.6) rotate(-14deg); transition: opacity .25s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
-.dd-lines { left: 63.5%; top: .97em; width: 42.3%; z-index: 2; clip-path: inset(0 100% 0 0); transition: opacity .2s ease, clip-path .55s cubic-bezier(.65, 0, .35, 1) .08s; }
+.dd-lines { left: 63.5%; top: .86em; width: 42.3%; z-index: 2; clip-path: inset(0 100% 0 0); transition: opacity .2s ease, clip-path .55s cubic-bezier(.65, 0, .35, 1) .08s; }
 .dd-pencil { left: 96.7%; top: 1.07em; width: 8%; z-index: 3; transform: translate(-20%, -25%) rotate(-12deg); transition: opacity .25s ease .18s, transform .45s cubic-bezier(.34, 1.56, .64, 1) .18s; }
 .about-title:hover .doodle { opacity: 1; }
 .about-title:hover .dd-star, .about-title:hover .dd-pencil { transform: none; }
