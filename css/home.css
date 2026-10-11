@@ -27,7 +27,7 @@
 .is-ready .line > span { transform: translateY(0); }
 /* Hand-drawn underline under the name: wipes in left to right on hover */
 .name { position: relative; isolation: isolate; }
-.name-underline { position: absolute; left: 0; top: .95em; width: 100%; height: .17em; z-index: -1; pointer-events: none; user-select: none; clip-path: inset(0 100% 0 0); transition: clip-path .7s cubic-bezier(.65, 0, .35, 1); }
+.name-underline { position: absolute; left: 0; top: .95em; width: 100%; height: .28em; z-index: -1; pointer-events: none; user-select: none; clip-path: inset(0 100% 0 0); transition: clip-path .7s cubic-bezier(.65, 0, .35, 1); }
 .name:hover .name-underline { clip-path: inset(0 0 0 0); }
 @media (hover: none) { .name-underline { clip-path: inset(0 0 0 0); } }
 .hero-media { margin: clamp(16px, 2vw, 32px) 0 0; position: relative; overflow: hidden; aspect-ratio: 16 / 9; background: #F3F3F2; clip-path: inset(100% 0 0 0); transition: clip-path 1.3s .15s var(--ease-io); }
