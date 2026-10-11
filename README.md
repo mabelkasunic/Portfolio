@@ -15,11 +15,13 @@ mabel-portfolio/
 ├── index.html        Home page (hero, projects, about, contact)
 ├── techtank.html     TechTank case study
 ├── resume.html       Résumé preview (opens Kasunic_Mabel_Resume.pdf)
+├── about.html        About page (title with hover doodles)
 ├── css/
 │   ├── base.css      Shared: fonts, colours, grid, header, reveal animation
 │   ├── home.css      Home page styles (loading screen, hero, project cards)
 │   ├── project.css   Case-study styles (slider, gallery, colour stack, quote)
-│   └── resume.css    Résumé page styles
+│   ├── resume.css    Résumé page styles
+│   └── about.css     About page styles
 ├── js/
 │   └── main.js       Loading screen, scroll reveals, before/after slider, colour card loop
 └── images/           All images used on both pages

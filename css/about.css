@@ -1,0 +1,37 @@
+/* ==========================================================================
+   About page (about.html) — uses base.css + project.css (footer)
+   ========================================================================== */
+
+.about-main { min-height: 60vh; }
+
+/* Title — same treatment as the home page name: medium weight, uppercase,
+   tight tracking, slide-up reveal. Sized so "PRODUCT DESIGNER" fills the width,
+   then centred. The title is only as wide as its longest line, so "I'm Mabel"
+   ends exactly where "Designer" ends. */
+.about-hero { padding-top: clamp(56px, 11vw, 180px); padding-bottom: clamp(64px, 8vw, 128px); display: flex; justify-content: center; overflow: hidden; margin: 0 calc(-1 * var(--pad)); padding-left: var(--pad); padding-right: var(--pad); }
+.about-title { margin: 0; position: relative; isolation: isolate; cursor: default; font-weight: 500; font-size: min(calc((100vw - 2 * var(--pad)) / 9.9), 190px); line-height: 1; letter-spacing: -.05em; text-transform: uppercase; display: inline-flex; flex-direction: column; width: max-content; max-width: 100%; }
+.a-row { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: .3em; white-space: nowrap; }
+.line { display: block; overflow: hidden; padding-top: .06em; padding-bottom: .04em; padding-right: .02em; }
+.line > span { display: block; transform: translateY(110%); transition: transform 1.15s var(--ease); }
+.a-row:first-child .line:nth-child(2) > span { transition-delay: .06s; }
+.a-row:nth-child(2) .line > span { transition-delay: .12s; }
+.is-ready .line > span { transform: translateY(0); }
+
+/* Hand-drawn doodles: hidden until the cursor is over the title.
+   x positions are % of the title's width, y positions are em of its type size,
+   so they stay locked to the words at any screen size. */
+.doodle { position: absolute; display: block; height: auto; pointer-events: none; user-select: none; opacity: 0; }
+.dd-star { left: -7.5%; top: -.63em; width: 25%; z-index: 0; transform: scale(.6) rotate(-14deg); transition: opacity .25s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.dd-lines { left: 63.5%; top: .97em; width: 42.3%; z-index: 2; clip-path: inset(0 100% 0 0); transition: opacity .2s ease, clip-path .55s cubic-bezier(.65, 0, .35, 1) .08s; }
+.dd-pencil { left: 96.7%; top: 1.07em; width: 8%; z-index: 3; transform: translate(-20%, -25%) rotate(-12deg); transition: opacity .25s ease .18s, transform .45s cubic-bezier(.34, 1.56, .64, 1) .18s; }
+.about-title:hover .doodle { opacity: 1; }
+.about-title:hover .dd-star, .about-title:hover .dd-pencil { transform: none; }
+.about-title:hover .dd-lines { clip-path: inset(0 0 0 0); }
+
+/* Phones and tablets can't hover, so show the doodles there */
+@media (hover: none) { .doodle { opacity: 1; transform: none; clip-path: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .line > span { transform: none; }
+  .doodle { transform: none; clip-path: none; }
+}
