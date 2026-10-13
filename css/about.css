@@ -35,3 +35,59 @@
   .line > span { transform: none; }
   .doodle { transform: none; clip-path: none; }
 }
+
+/* ==========================================================================
+   "Things I love" photo fan
+   Five photos fanned out under the title. GradEx is lit up by default; hovering
+   (or tapping / tabbing to) a photo brings it forward at full brightness with
+   its hand-written label above, and dims the rest.
+   Positions are % of the fan's width/height so it scales at every screen size.
+   ========================================================================== */
+.fan-wrap { padding-bottom: clamp(48px, 8vw, 140px); display: flex; justify-content: center; }
+.fan { position: relative; width: min(1000px, 100%); aspect-ratio: 323 / 235; }
+.fan-card { position: absolute; margin: 0; aspect-ratio: 1 / 1; filter: brightness(.55) saturate(.85); transform-origin: 50% 70%; transition: filter .45s ease, transform .55s cubic-bezier(.22, .8, .2, 1); -webkit-tap-highlight-color: transparent; }
+.fan-card img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
+/* The photo sizes differ only by how much rotation padding each file has */
+.c-hiking  { left: -4.6%; top: 33.6%; width: 47.1%; z-index: 1; clip-path: polygon(65.1% 1.5%, 96.9% 69.5%, 31.8% 99.8%, 0% 31.8%); }
+.c-lego    { left: 12.3%; top: 27.7%; width: 43.4%; z-index: 2; clip-path: polygon(78.7% 0%, 99.8% 78.5%, 21.1% 99.8%, 0% 21.1%); }
+.c-gradex  { left: 29.4%; top: 20%;   width: 34%;   z-index: 3; }
+.c-seafood { left: 44.9%; top: 29.8%; width: 43.4%; z-index: 2; clip-path: polygon(21.1% 0%, 99.8% 21.1%, 78.5% 99.8%, 0% 78.7%); }
+.c-ocad    { left: 53.9%; top: 33.6%; width: 47.1%; z-index: 1; clip-path: polygon(32% 0.2%, 99.8% 31.8%, 68% 99.8%, 0.4% 68.2%); }
+
+/* Invisible hover zones: one strip per photo, matching where each photo shows
+   in the stack, so pointing at any visible part of a photo selects it even
+   though the raised photo overlaps its neighbours. */
+.fan-zone { position: absolute; top: 0; bottom: 0; z-index: 20; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.fan-zone:focus-visible { outline: none; }
+.z-hiking  { left: -4%; width: 21%; }
+.z-lego    { left: 17%; width: 14%; }
+.z-gradex  { left: 31%; width: 32%; }
+.z-seafood { left: 63%; width: 19%; }
+.z-ocad    { left: 82%; width: 22%; }
+.fan-card { pointer-events: none; }
+
+/* Active photo: the hovered/focused one, or GradEx when nothing is hovered */
+.z-hiking:hover ~ .c-hiking, .z-hiking:focus-visible ~ .c-hiking,
+.z-lego:hover ~ .c-lego, .z-lego:focus-visible ~ .c-lego,
+.z-gradex:hover ~ .c-gradex, .z-gradex:focus-visible ~ .c-gradex,
+.z-seafood:hover ~ .c-seafood, .z-seafood:focus-visible ~ .c-seafood,
+.z-ocad:hover ~ .c-ocad, .z-ocad:focus-visible ~ .c-ocad,
+.fan:not(:hover):not(:focus-within) .c-gradex { z-index: 10; filter: none; transform: translateY(-4%) scale(1.05); }
+
+/* Hand-written labels, placed above each photo */
+.fan-label { position: absolute; height: auto; pointer-events: none; user-select: none; opacity: 0; transform: translateY(12px) rotate(var(--r)); transition: opacity .3s ease, transform .45s cubic-bezier(.22, .8, .2, 1); z-index: 11; }
+.l-hiking  { --r: -22deg; left: 0%;    top: 19%;  width: 25%; }
+.l-lego    { --r: -14deg; left: 13%;   top: 11%;  width: 21.5%; }
+.l-gradex  { --r: -2deg;  left: 34%;   top: 5%;   width: 23%; }
+.l-seafood { --r: 10deg;  left: 56%;   top: 13%;  width: 27%; }
+.l-ocad    { --r: 18deg;  left: 73%;   top: 19%;  width: 22%; }
+.z-hiking:hover ~ .l-hiking, .z-hiking:focus-visible ~ .l-hiking,
+.z-lego:hover ~ .l-lego, .z-lego:focus-visible ~ .l-lego,
+.z-gradex:hover ~ .l-gradex, .z-gradex:focus-visible ~ .l-gradex,
+.z-seafood:hover ~ .l-seafood, .z-seafood:focus-visible ~ .l-seafood,
+.z-ocad:hover ~ .l-ocad, .z-ocad:focus-visible ~ .l-ocad,
+.fan:not(:hover):not(:focus-within) .l-gradex { opacity: 1; transform: translateY(0) rotate(var(--r)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card, .fan-label { transition: opacity .2s ease, filter .2s ease; }
+}
