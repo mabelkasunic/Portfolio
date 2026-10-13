@@ -36,57 +36,80 @@
   .doodle { transform: none; clip-path: none; }
 }
 
+/* "Off the Clock" intro above the photo fan — laid out like the home page
+   intro row: rule on top, title on the left, text in columns 7–11 */
+.off-clock { padding-top: 16px; border-top: 1px solid var(--ink); row-gap: 20px; margin-bottom: clamp(40px, 5vw, 88px); }
+.off-label { grid-column: 1 / span 4; margin: 0; font-size: clamp(28px, 2.8vw, 48px); font-weight: 500; letter-spacing: -.035em; line-height: 1.05; }
+.off-text { grid-column: 7 / span 5; display: flex; flex-direction: column; gap: 28px; }
+.off-body { margin: 0; font-size: clamp(18px, 1.75vw, 28px); line-height: 1.4; letter-spacing: -.006em; max-width: 32em; text-wrap: pretty; }
+.off-hint { margin: 0; }
+.hint-tap { display: none; }
+@media (hover: none) { .hint-hover { display: none; } .hint-tap { display: inline; } }
+@media (max-width: 900px) { .off-text { grid-column: 4 / -1; } }
+@media (max-width: 640px) { .off-label, .off-text { grid-column: 1 / -1; } }
+
 /* ==========================================================================
    "Things I love" photo fan
-   Five photos fanned out under the title. GradEx is lit up by default; hovering
+   Five photos fanned out under the title. All photos are dimmed until one is hovered; hovering
    (or tapping / tabbing to) a photo brings it forward at full brightness with
    its hand-written label above, and dims the rest.
    Positions are % of the fan's width/height so it scales at every screen size.
    ========================================================================== */
 .fan-wrap { padding-bottom: clamp(48px, 8vw, 140px); display: flex; justify-content: center; }
-.fan { position: relative; width: min(1000px, 100%); aspect-ratio: 323 / 235; }
-.fan-card { position: absolute; margin: 0; aspect-ratio: 1 / 1; filter: brightness(.55) saturate(.85); transform-origin: 50% 70%; transition: filter .45s ease, transform .55s cubic-bezier(.22, .8, .2, 1); -webkit-tap-highlight-color: transparent; }
-.fan-card img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
-/* The photo sizes differ only by how much rotation padding each file has */
-.c-hiking  { left: -4.6%; top: 33.6%; width: 47.1%; z-index: 1; clip-path: polygon(65.1% 1.5%, 96.9% 69.5%, 31.8% 99.8%, 0% 31.8%); }
-.c-lego    { left: 12.3%; top: 27.7%; width: 43.4%; z-index: 2; clip-path: polygon(78.7% 0%, 99.8% 78.5%, 21.1% 99.8%, 0% 21.1%); }
-.c-gradex  { left: 29.4%; top: 20%;   width: 34%;   z-index: 3; }
-.c-seafood { left: 44.9%; top: 29.8%; width: 43.4%; z-index: 2; clip-path: polygon(21.1% 0%, 99.8% 21.1%, 78.5% 99.8%, 0% 78.7%); }
-.c-ocad    { left: 53.9%; top: 33.6%; width: 47.1%; z-index: 1; clip-path: polygon(32% 0.2%, 99.8% 31.8%, 68% 99.8%, 0.4% 68.2%); }
+.fan { position: relative; width: min(1100px, 100%); aspect-ratio: 100 / 63.25; }
+.fan-card { position: absolute; margin: 0; aspect-ratio: 1 / 1; pointer-events: none; filter: brightness(.55) saturate(.85); transform-origin: 50% 70%; transition: filter .45s ease, transform .55s cubic-bezier(.22, .8, .2, 1); }
+.fan-card img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
+/* Each photo: position and size (% of the fan), stacking order, and how far it rises when active */
+.c-skiing { --lift: -20.78%; left: -3.58%; top: 32.36%; width: 41.78%; z-index: 1; }
+.c-hiking { --lift: -11.77%; left: 5.71%; top: 21.98%; width: 41.78%; z-index: 2; }
+.c-lego { --lift: -9.21%; left: 16.87%; top: 19.67%; width: 36.82%; z-index: 3; }
+.c-gradex { --lift: -4%; left: 35%; top: 21.09%; width: 30%; z-index: 4; }
+.c-seafood { --lift: -9.16%; left: 46.41%; top: 19.64%; width: 36.82%; z-index: 3; }
+.c-ocad { --lift: -13.85%; left: 54.01%; top: 23.76%; width: 40.11%; z-index: 2; }
+.c-books { --lift: -19.38%; left: 61.8%; top: 32.36%; width: 41.78%; z-index: 1; }
 
-/* Invisible hover zones: one strip per photo, matching where each photo shows
-   in the stack, so pointing at any visible part of a photo selects it even
-   though the raised photo overlaps its neighbours. */
+/* Invisible hover zones: one strip per photo, so pointing at any visible part of a
+   photo selects it even though the raised photo overlaps its neighbours. */
 .fan-zone { position: absolute; top: 0; bottom: 0; z-index: 20; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .fan-zone:focus-visible { outline: none; }
-.z-hiking  { left: -4%; width: 21%; }
-.z-lego    { left: 17%; width: 14%; }
-.z-gradex  { left: 31%; width: 32%; }
-.z-seafood { left: 63%; width: 19%; }
-.z-ocad    { left: 82%; width: 22%; }
-.fan-card { pointer-events: none; }
+.z-skiing { left: -3%; width: 24.63%; }
+.z-hiking { left: 21.63%; width: 8.97%; }
+.z-lego { left: 30.59%; width: 12.03%; }
+.z-gradex { left: 42.62%; width: 14.76%; }
+.z-seafood { left: 57.38%; width: 12.04%; }
+.z-ocad { left: 69.42%; width: 8.97%; }
+.z-books { left: 78.39%; width: 24.61%; }
 
-/* Active photo: the hovered/focused one, or GradEx when nothing is hovered */
+/* Active photo: the hovered/focused one. With nothing hovered, all photos stay dimmed. */
+.z-skiing:hover ~ .c-skiing, .z-skiing:focus-visible ~ .c-skiing,
 .z-hiking:hover ~ .c-hiking, .z-hiking:focus-visible ~ .c-hiking,
 .z-lego:hover ~ .c-lego, .z-lego:focus-visible ~ .c-lego,
 .z-gradex:hover ~ .c-gradex, .z-gradex:focus-visible ~ .c-gradex,
 .z-seafood:hover ~ .c-seafood, .z-seafood:focus-visible ~ .c-seafood,
 .z-ocad:hover ~ .c-ocad, .z-ocad:focus-visible ~ .c-ocad,
-.fan:not(:hover):not(:focus-within) .c-gradex { z-index: 10; filter: none; transform: translateY(-4%) scale(1.05); }
+.z-books:hover ~ .c-books, .z-books:focus-visible ~ .c-books { z-index: 10; filter: none; transform: translateY(var(--lift)) scale(1.05); }
 
-/* Hand-written labels, placed above each photo */
-.fan-label { position: absolute; height: auto; pointer-events: none; user-select: none; opacity: 0; transform: translateY(12px) rotate(var(--r)); transition: opacity .3s ease, transform .45s cubic-bezier(.22, .8, .2, 1); z-index: 11; }
-.l-hiking  { --r: -22deg; left: 0%;    top: 19%;  width: 25%; }
-.l-lego    { --r: -14deg; left: 13%;   top: 11%;  width: 21.5%; }
-.l-gradex  { --r: -2deg;  left: 34%;   top: 5%;   width: 23%; }
-.l-seafood { --r: 10deg;  left: 56%;   top: 13%;  width: 27%; }
-.l-ocad    { --r: 18deg;  left: 73%;   top: 19%;  width: 22%; }
+/* Hand-written labels: left/top is the point just above the middle of the
+   raised photo's top edge; each label is anchored there by its bottom centre
+   and tilted to match the photo. */
+.fan-label { position: absolute; height: auto; pointer-events: none; user-select: none; opacity: 0; transform-origin: 50% 100%; transform: translate(-50%, -100%) rotate(var(--r)) translateY(12px); transition: opacity .3s ease, transform .45s cubic-bezier(.22, .8, .2, 1); z-index: 11; }
+.l-skiing { --r: -35deg; left: 7.13%; top: 28.01%; width: 26.06%; }
+.l-hiking { --r: -24.96deg; left: 18.1%; top: 20.57%; width: 24.7%; }
+.l-lego { --r: -15.01deg; left: 30.64%; top: 15.66%; width: 21.78%; }
+.l-gradex { --r: 0deg; left: 50%; top: 14.37%; width: 23.18%; }
+.l-seafood { --r: 15.01deg; left: 69.37%; top: 15.66%; width: 27.08%; }
+.l-ocad { --r: 24.99deg; left: 81.6%; top: 20.54%; width: 21.82%; }
+.l-books { --r: 35deg; left: 92.87%; top: 28.94%; width: 26.23%; }
+.z-skiing:hover ~ .l-skiing, .z-skiing:focus-visible ~ .l-skiing,
 .z-hiking:hover ~ .l-hiking, .z-hiking:focus-visible ~ .l-hiking,
 .z-lego:hover ~ .l-lego, .z-lego:focus-visible ~ .l-lego,
 .z-gradex:hover ~ .l-gradex, .z-gradex:focus-visible ~ .l-gradex,
 .z-seafood:hover ~ .l-seafood, .z-seafood:focus-visible ~ .l-seafood,
 .z-ocad:hover ~ .l-ocad, .z-ocad:focus-visible ~ .l-ocad,
-.fan:not(:hover):not(:focus-within) .l-gradex { opacity: 1; transform: translateY(0) rotate(var(--r)); }
+.z-books:hover ~ .l-books, .z-books:focus-visible ~ .l-books { opacity: 1; transform: translate(-50%, -100%) rotate(var(--r)); }
+
+/* Small screens: pull the fan in a little so the outer hand-written labels stay on screen */
+@media (max-width: 1240px) { .fan { width: 86%; } }
 
 @media (prefers-reduced-motion: reduce) {
   .fan-card, .fan-label { transition: opacity .2s ease, filter .2s ease; }
