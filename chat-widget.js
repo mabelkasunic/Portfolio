@@ -6,14 +6,24 @@
   const TITLE = "Ask about Mabel";
   const GREETING = "Hi! Ask me anything about Mabel's work, projects or experience.";
   const ACCENT = "#1f1f1f"; // match your site's main color
+  const HOVER_TEXT = "Ask me"; // text that slides out when you hover the button
   // --------------------
 
   const history = [];
 
   const style = document.createElement("style");
   style.textContent = `
-    .mk-chat-btn{position:fixed;right:20px;bottom:20px;z-index:9999;width:56px;height:56px;border-radius:50%;
-      border:none;background:${ACCENT};color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+    .mk-chat-btn{position:fixed;right:20px;bottom:20px;z-index:9999;height:56px;min-width:56px;max-width:56px;padding:0 16px;
+      border-radius:28px;border:none;background:${ACCENT};color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);
+      display:flex;align-items:center;justify-content:flex-start;gap:0;overflow:hidden;white-space:nowrap;
+      font:600 15px/1 system-ui,-apple-system,sans-serif;
+      transition:max-width .35s cubic-bezier(.2,.8,.2,1),gap .35s cubic-bezier(.2,.8,.2,1),transform .2s ease,box-shadow .2s ease}
+    .mk-chat-btn svg{flex:0 0 24px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+    .mk-chat-btn .mk-label{opacity:0;transform:translateX(-6px);transition:opacity .25s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+    .mk-chat-btn:hover,.mk-chat-btn:focus-visible{max-width:160px;gap:10px;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+    .mk-chat-btn:hover svg,.mk-chat-btn:focus-visible svg{transform:rotate(-8deg)}
+    .mk-chat-btn:hover .mk-label,.mk-chat-btn:focus-visible .mk-label{opacity:1;transform:none;transition-delay:.08s}
+    @media (prefers-reduced-motion:reduce){.mk-chat-btn,.mk-chat-btn *{transition:none!important}}
     .mk-chat{position:fixed;right:20px;bottom:88px;z-index:9999;width:min(360px,calc(100vw - 40px));height:min(500px,calc(100vh - 120px));
       background:#fff;color:#1f1f1f;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.2);display:none;flex-direction:column;
       overflow:hidden;font:14px/1.45 system-ui,-apple-system,sans-serif}
@@ -34,7 +44,11 @@
   const btn = document.createElement("button");
   btn.className = "mk-chat-btn";
   btn.setAttribute("aria-label", "Open chat");
-  btn.textContent = "💬";
+  btn.innerHTML =
+    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>' +
+    '<span class="mk-label">' + HOVER_TEXT + '</span>';
 
   const panel = document.createElement("div");
   panel.className = "mk-chat";
